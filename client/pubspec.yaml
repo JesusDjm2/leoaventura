@@ -47,6 +47,7 @@ dependencies:
   just_audio: ^0.10.6
   audio_session: ^0.2.4
   crypto: ^3.0.8
+  google_fonts: ^8.1.0
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +82,10 @@ flutter:
     - assets/audio/v1/palabras/
     - assets/audio/v1/instrucciones/
     - assets/audio/v1/mascota/
+    # Fuentes empaquetadas para google_fonts (offline-first) + licencias OFL.
+    - assets/google_fonts/
+    # Logo sin fondo (scripts/remove_logo_background.py).
+    - assets/brand/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

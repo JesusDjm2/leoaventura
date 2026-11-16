@@ -4,9 +4,12 @@ import 'reports/parent_report_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/parent_settings_screen.dart';
+import 'theme/app_theme.dart';
 import 'widgets/letter_tracing.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  AppTheme.configureFonts();
   runApp(const LeoParvulosApp());
 }
 
@@ -18,14 +21,7 @@ class LeoParvulosApp extends StatelessWidget {
     return MaterialApp(
       title: 'LeoPárvulos - Minijuegos de Lectura',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFBF360C),
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF0F4F8),
-      ),
+      theme: AppTheme.light(),
       home: const TracingGameScreen(),
       routes: {
         HomeScreen.routeName: (_) => const HomeScreen(),
