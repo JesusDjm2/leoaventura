@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../reports/parent_report_models.dart';
 import '../reports/parent_report_screen.dart';
 import '../services/tts_service.dart';
+import '../widgets/leo_mascot.dart';
 import 'onboarding_screen.dart';
 import 'parent_settings_screen.dart';
 
@@ -100,17 +101,35 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Container(
-                      width: 72,
-                      height: 72,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFFFECB3),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Center(
-                        child: Text(
-                          '🦁',
-                          style: TextStyle(fontSize: 42),
+                    Semantics(
+                      button: true,
+                      label: 'Mascota León Leo, tu guía de lectura. Toca para escuchar un saludo.',
+                      child: GestureDetector(
+                        onTap: () {
+                          ttsService?.speak('¡Hola! Soy Leo el león. ¿Listo para jugar y aprender hoy?');
+                        },
+                        child: Container(
+                          key: const Key('home_leo_mascot'),
+                          width: 84,
+                          height: 84,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFECB3),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xFFFFB300), width: 2.5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFFF57C00).withValues(alpha: 0.20),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: LeoMascot(
+                              state: MascotState.idle,
+                              size: 76,
+                            ),
+                          ),
                         ),
                       ),
                     ),

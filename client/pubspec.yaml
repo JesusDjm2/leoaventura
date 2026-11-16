@@ -86,6 +86,8 @@ flutter:
     - assets/google_fonts/
     # Logo sin fondo (scripts/remove_logo_background.py).
     - assets/brand/
+    # Mascota León Leo (Fase 15).
+    - assets/mascot/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
