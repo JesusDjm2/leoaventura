@@ -1,0 +1,88 @@
+{
+    "schema": 1,
+    "version": 1,
+    "manifest_hash": "6519fba52222e45b3227db510dff0ca7900fc3b14c51deb14990c2d437f06e62",
+    "clip_count": 5,
+    "clips": {
+        "fonemas/fonema_a": {
+            "category": "fonemas",
+            "name": "fonema_a",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_a.m4a",
+                    "bytes": 8505,
+                    "sha256": "7243d870af7c454b0c0b73aa8e78fd442373169ae122b0bca91d0ae6844b1f87"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_a.opus",
+                    "bytes": 6227,
+                    "sha256": "d1fc38f84515f81fa251cc22b5a428924024a68ddfeb01506b48effd3c5b041b"
+                }
+            }
+        },
+        "fonemas/fonema_m": {
+            "category": "fonemas",
+            "name": "fonema_m",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_m.m4a",
+                    "bytes": 8602,
+                    "sha256": "d8cc9874a7cc1abd1fb3b9263eca80f0c09bad2d3e4c788d6f209325a9724da6"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_m.opus",
+                    "bytes": 6916,
+                    "sha256": "13b2d6f69cfc58f75ef757b495fe8506d9739ebf8ec9bf39b079bf4501626cd6"
+                }
+            }
+        },
+        "fonemas/fonema_p": {
+            "category": "fonemas",
+            "name": "fonema_p",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_p.m4a",
+                    "bytes": 4410,
+                    "sha256": "c038fd142a6ab2cdaee5273bf56d1460683b389733e346b67fd48b3e9576357f"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_p.opus",
+                    "bytes": 3292,
+                    "sha256": "438f5f14ae6ea77fd4fc379d35c1f0883f0aac443e8b9074b5bbf9484d379ac7"
+                }
+            }
+        },
+        "fonemas/fonema_s": {
+            "category": "fonemas",
+            "name": "fonema_s",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_s.m4a",
+                    "bytes": 8505,
+                    "sha256": "60a4d760910099ff8253578d69ba74a25eb36005301c9ea799a10b95973383b8"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_s.opus",
+                    "bytes": 6581,
+                    "sha256": "7160ae55a69ea9f22148a9db661b51f2c6d10e1be704682a5c9ece84a45e0312"
+                }
+            }
+        },
+        "instrucciones/instruccion_traza_letra": {
+            "category": "instrucciones",
+            "name": "instruccion_traza_letra",
+            "files": {
+                "aac": {
+                    "path": "instrucciones/instruccion_traza_letra.m4a",
+                    "bytes": 14628,
+                    "sha256": "9c11ff0ef06b3711f307c86847333d3f773e81949106b0bc2775ffc616475045"
+                },
+                "opus": {
+                    "path": "instrucciones/instruccion_traza_letra.opus",
+                    "bytes": 10986,
+                    "sha256": "39e66b5ce10cf2e4efdb922cbabaad95fb460da8135eb4ebfb34d05f0a527f1e"
+                }
+            }
+        }
+    }
+}

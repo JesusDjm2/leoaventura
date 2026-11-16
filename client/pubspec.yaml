@@ -61,6 +61,7 @@ dev_dependencies:
   drift_dev: ^2.31.0
   build_runner: ^2.15.1
   just_audio_platform_interface: ^4.6.0
+  path_provider_platform_interface: ^2.1.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -72,6 +73,14 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  # Catálogo de audio empaquetado (scripts/bundle_flutter_audio.sh).
+  assets:
+    - assets/audio/v1/manifest.json
+    - assets/audio/v1/fonemas/
+    - assets/audio/v1/palabras/
+    - assets/audio/v1/instrucciones/
+    - assets/audio/v1/mascota/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
