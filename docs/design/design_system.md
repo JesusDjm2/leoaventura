@@ -156,7 +156,95 @@ Todos los objetivos táctiles miden ≥ 48 dp.
 El contraste se calcula con `Color.computeLuminance()` de Flutter (fórmula WCAG 2.x),
 sin paquetes externos.
 
-## 6. Pendiente
+## 6. Componentes base (`client/lib/ui/`)
+
+Captura: [`docs/ui/design_system_components.png`](../ui/design_system_components.png)
+(tablet horizontal, 1280×800 a 2x) y `design_system_components_portrait.png` (800×1280).
+Pantalla de prueba: **UI Playground** (`/#/playground`, `lib/screens/ui_playground_screen.dart`).
+
+![UI Playground](../ui/design_system_components.png)
+
+Los componentes usan **solo** tokens de `app_theme.dart` (`AppColors`, `AppTypography`,
+`Theme.of(context).textTheme`). Un test recorre el código fuente de `lib/ui/` y del
+playground, y falla si encuentra `Color(0x…)`, `Colors.*`, `Color.from…`, `fontFamily`,
+`GoogleFonts.*` o `TextStyle(` nuevos.
+
+### `PrimaryButton`
+
+```dart
+PrimaryButton(label: '¡Empezar!', icon: Icons.play_arrow_rounded,
+    size: PrimaryButtonSize.large, onPressed: () {});
+```
+
+| Propiedad | Detalle |
+|---|---|
+| Colores | Cara `brandOrange`, texto e icono `navy` (5.0:1), canto inferior `primary` |
+| Tipografía | `labelLarge` (Baloo 2 700): 20 dp en `regular`, 26 dp en `large` |
+| Tamaño | `regular` 56 dp y `large` 72 dp de alto, más 5 dp de canto; ancho mínimo = 2× el alto |
+| Estados | Al presionar se hunde 5 dp. `isLoading` muestra un spinner y bloquea los toques. `onPressed: null` lo deshabilita: fondo `surfaceContainerHighest`, texto `textMuted` (5.5:1). |
+| Overflow | Etiqueta de una línea con elipsis; `expand: true` ocupa todo el ancho |
+
+### `ReadingCard`
+
+```dart
+ReadingCard(word: 'mamá', syllables: ['ma', 'má'], caption: 'Sílabas',
+    onListen: () => audio.play('palabras/palabra_mama'), onTap: ..., selected: true);
+```
+
+| Propiedad | Detalle |
+|---|---|
+| Palabra | `AppTypography.readingWord`: Andika Bold, **72 dp**, espaciado 1.5 |
+| Sílabas | Alternan `navy` y `primary` (11.6:1 y 6.45:1 sobre blanco) |
+| Selección | Borde de 5 dp en `primary` (6.45:1; `brandOrange` daría solo 2.3:1 como indicador de estado) |
+| Escuchar | `IconButton` de 56 dp, `brandCyan` con icono `navy` (5.2:1), tooltip "Escuchar *palabra*" |
+| Semántica | Un solo nodo: "mamá, sílabas: ma - má", con `button` y `selected` cuando tiene `onTap` |
+| Overflow | `FittedBox(scaleDown)`: una palabra que no cabe se reduce en vez de desbordarse. El layout del playground da ≥ 360 dp por tarjeta para que en tablet **no** haga falta reducirla (lo verifica un test). |
+
+### `SuccessDialog`
+
+```dart
+await SuccessDialog.show(context, title: '¡Lo lograste!', message: '...', stars: 2);
+```
+
+| Propiedad | Detalle |
+|---|---|
+| Insignia | Círculo `brandGreen` con borde `secondary` y check `navy` |
+| Estrellas | Ganadas: `brandOrange` con contorno `navy`, como el logo (el contorno da ≥ 3:1). No ganadas: contorno `outline` (4.3:1). Semántica: "2 de 3 estrellas". |
+| Texto | Título `headlineMedium` (Baloo 2); mensaje `bodyLarge` (Andika 20) |
+| Acción | `PrimaryButton` grande "¡Seguir!" que cierra el modal |
+| Modal | `barrierDismissible: false`, velo `navy` al 55 %, ancho máximo 440 dp |
+
+### Legibilidad de la lectura a distancia de tablet
+
+Métricas reales de Andika Bold: altura x = 0.508 em, mayúsculas = 0.725 em.
+Con la palabra a 72 dp (1 dp ≈ 0.159 mm, densidad nominal de Android):
+
+| Distancia | Altura x | Ángulo visual | Mayúscula | Ángulo visual |
+|---|---|---|---|---|
+| 40 cm | 5.8 mm | 50′ (10× el umbral 20/20 de 5′) | 8.3 mm | 71′ |
+| 60 cm | 5.8 mm | 33′ (6.7×) | 8.3 mm | 48′ |
+
+Es decir, a la distancia habitual de una tablet en la mesa, la letra más pequeña de la
+palabra (la "a" o la "m") subtiende entre 7 y 10 veces el mínimo que distingue una
+persona con visión normal. Los milímetros reales varían un poco según la densidad de
+cada pantalla.
+
+### Verificación (`client/test/ui/components_test.dart`, 10 tests)
+
+- Uso exclusivo de tokens: revisión del código fuente.
+- Playground en **tablet horizontal 1280×800, tablet vertical 800×1280 y teléfono
+  412×915**: sin overflow ni errores de layout, los 3 componentes presentes y las guías
+  `androidTapTargetGuideline` (48 dp), `iOSTapTargetGuideline`, `labeledTapTargetGuideline`
+  y `textContrastGuideline` sin hallazgos. Se auditan primero en el tamaño real y después
+  con la página entera visible.
+- En tablet, las 3 palabras se pintan en Andika 700 a 72 dp, **sin reducción** (el
+  tamaño pintado es igual al natural).
+- `ReadingCard`: colores de sílaba y semántica. Una palabra larga en una tarjeta de
+  180 dp se reduce sin desbordarse.
+- `PrimaryButton`: tap, `isLoading` y deshabilitado. Etiqueta Baloo 2 `navy` sobre `brandOrange`.
+- `SuccessDialog.show`: abre, anuncia "3 de 3 estrellas" y "¡Seguir!" lo cierra.
+
+## 7. Pendiente
 
 - Las pantallas existentes (`home_screen`, `parent_settings_screen`, el panel de padres,
   `letter_tracing`...) todavía tienen colores fijos en el código (`0xFFBF360C`, etc.).

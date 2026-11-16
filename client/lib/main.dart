@@ -4,6 +4,7 @@ import 'reports/parent_report_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/parent_settings_screen.dart';
+import 'screens/ui_playground_screen.dart';
 import 'theme/app_theme.dart';
 import 'widgets/letter_tracing.dart';
 
@@ -33,6 +34,7 @@ class LeoParvulosApp extends StatelessWidget {
         },
         ParentSettingsScreen.routeName: (_) => const ParentSettingsScreen(),
         OnboardingScreen.routeName: (_) => const OnboardingScreen(),
+        UiPlaygroundScreen.routeName: (_) => const UiPlaygroundScreen(),
       },
     );
   }
