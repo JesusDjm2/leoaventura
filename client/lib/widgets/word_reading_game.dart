@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../content/activity_model.dart';
+import '../services/bundled_clip_player.dart';
 import '../services/haptic_service.dart';
 import '../services/tts_service.dart';
 import '../theme/app_theme.dart';
@@ -87,14 +88,23 @@ class _WordReadingGameState extends State<WordReadingGame> {
     _ttsService = widget.ttsService ?? ParvuloTtsService.shared;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _ttsService.speak(
-        'Toca cada sílaba para leer la palabra y luego elige su dibujo.',
+      _ttsService.playClip(
+        'instrucciones/instruccion_leer_silabas',
+        fallbackText:
+            'Toca cada sílaba para leer la palabra y luego elige su dibujo.',
       );
     });
   }
 
+  @override
+  void dispose() {
+    _ttsService.stopPlayback();
+    super.dispose();
+  }
+
   void _onSyllableTapped(int index) {
     final syllable = _syllables[index];
+    final syllableSlug = normalizeAudioSlug(syllable);
     _haptics.lightImpact();
 
     final wasDecoded = _wordDecoded;
@@ -109,16 +119,29 @@ class _WordReadingGameState extends State<WordReadingGame> {
     });
 
     if (_wordDecoded && !wasDecoded) {
-      _ttsService.speak('$syllable. ¡Muy bien! Dice ${widget.targetWord}. Ahora toca el dibujo de ${widget.targetWord}.');
+      final wordClip = widget.audioKey != null && widget.audioKey!.isNotEmpty
+          ? widget.audioKey
+          : 'palabras/palabra_${normalizeAudioSlug(widget.targetWord)}';
+      _ttsService.playClip(
+        wordClip,
+        fallbackText:
+            '$syllable. ¡Muy bien! Dice ${widget.targetWord}. Ahora toca el dibujo de ${widget.targetWord}.',
+      );
     } else {
-      _ttsService.speak(syllable);
+      _ttsService.playClip(
+        'silabas/silaba_$syllableSlug',
+        fallbackText: syllable,
+      );
     }
   }
 
   void _speakFullWord() {
     _haptics.lightImpact();
+    final wordClip = widget.audioKey != null && widget.audioKey!.isNotEmpty
+        ? widget.audioKey
+        : 'palabras/palabra_${normalizeAudioSlug(widget.targetWord)}';
     _ttsService.playClip(
-      widget.audioKey,
+      wordClip,
       fallbackText: widget.targetWord,
     );
   }
@@ -132,7 +155,10 @@ class _WordReadingGameState extends State<WordReadingGame> {
 
     if (option.isCorrect) {
       _haptics.mediumImpact();
-      _ttsService.speak('¡Bravo! Leíste ${widget.targetWord}.');
+      _ttsService.playClip(
+        'mascota/mascota_exi_palabra',
+        fallbackText: '¡Bravo! Leíste ${widget.targetWord}.',
+      );
       setState(() {
         _wordDecoded = true;
         _tappedSyllables.addAll(List.generate(_syllables.length, (i) => i));
@@ -141,7 +167,10 @@ class _WordReadingGameState extends State<WordReadingGame> {
       });
       widget.onComplete?.call();
     } else {
-      _ttsService.speak('Ese dibujo es ${option.word}. Busca ${widget.targetWord}.');
+      _ttsService.playClip(
+        'mascota/mascota_err_cerca',
+        fallbackText: 'Ese dibujo es ${option.word}. Busca ${widget.targetWord}.',
+      );
       setState(() {
         _leoState = AnimatedLeoStateName.sad;
       });
@@ -227,8 +256,8 @@ class _WordReadingGameState extends State<WordReadingGame> {
                                 borderRadius: BorderRadius.circular(20),
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 160),
-                                  constraints: const BoxConstraints(minWidth: 68, minHeight: 58),
-                                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                                  constraints: const BoxConstraints(minWidth: 74, minHeight: 58),
+                                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
                                   decoration: BoxDecoration(
                                     color: isTapped ? AppColors.brandOrange : AppColors.surface,
                                     borderRadius: BorderRadius.circular(20),
@@ -246,15 +275,14 @@ class _WordReadingGameState extends State<WordReadingGame> {
                                       ),
                                     ],
                                   ),
-                                  child: Center(
-                                    child: Text(
-                                      syllable,
-                                      style: const TextStyle(
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.w900,
-                                        color: AppColors.navy,
-                                        letterSpacing: 1.0,
-                                      ),
+                                  child: Text(
+                                    syllable,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w900,
+                                      color: AppColors.navy,
+                                      letterSpacing: 1.0,
                                     ),
                                   ),
                                 ),

@@ -35,6 +35,7 @@ class _ParentSettingsScreenState extends State<ParentSettingsScreen> {
   late String _voiceSpeed;
   late int _dailyLimitMinutes;
   late bool _crashReportingConsent;
+  late bool _adminAudioInspector;
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class _ParentSettingsScreenState extends State<ParentSettingsScreen> {
     _voiceSpeed = ParentSettingsState.voiceSpeed;
     _dailyLimitMinutes = ParentSettingsState.dailyLimitMinutes;
     _crashReportingConsent = ParentSettingsState.crashReportingConsent;
+    _adminAudioInspector = ParentSettingsState.adminAudioInspector;
   }
 
   void _generateNewChallenge() {
@@ -77,6 +79,7 @@ class _ParentSettingsScreenState extends State<ParentSettingsScreen> {
     ParentSettingsState.voiceSpeed = _voiceSpeed;
     ParentSettingsState.dailyLimitMinutes = _dailyLimitMinutes;
     ParentSettingsState.crashReportingConsent = _crashReportingConsent;
+    ParentSettingsState.adminAudioInspector = _adminAudioInspector;
     await ParentSettingsState.save();
 
     if (!mounted) return;
@@ -391,6 +394,24 @@ class _ParentSettingsScreenState extends State<ParentSettingsScreen> {
             value: _crashReportingConsent,
             activeThumbColor: AppColors.secondary,
             onChanged: (val) => setState(() => _crashReportingConsent = val),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        _SettingsTile(
+          title: 'Indicador Admin de Audio (Grabado vs. Sintético)',
+          subtitle:
+              'Muestra una barra flotante indicando si el sonido actual es tu voz grabada o voz sintética pendiente',
+          child: Switch(
+            key: const Key('switch_admin_audio_inspector'),
+            value: _adminAudioInspector,
+            activeThumbColor: AppColors.secondary,
+            onChanged: (val) {
+              setState(() => _adminAudioInspector = val);
+              ParentSettingsState.adminAudioInspector = val;
+              ParentSettingsState.save();
+            },
           ),
         ),
 

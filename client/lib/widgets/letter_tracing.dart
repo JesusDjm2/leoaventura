@@ -293,6 +293,7 @@ class _LetterTracingState extends State<LetterTracing>
 
   @override
   void dispose() {
+    _ttsService.stopPlayback();
     _guideController.dispose();
     super.dispose();
   }
@@ -384,7 +385,10 @@ class _LetterTracingState extends State<LetterTracing>
       _isCompleted = false;
       _leoState = AnimatedLeoStateName.idle;
     });
-    _ttsService.speak('Vamos de nuevo. ¡Tú puedes trazar la letra $_upperLetter!');
+    _ttsService.playClip(
+      'instrucciones/instruccion_reintentar',
+      fallbackText: 'Vamos de nuevo. ¡Tú puedes trazar la letra $_upperLetter!',
+    );
   }
 
   @override

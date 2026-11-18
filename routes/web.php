@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAudioController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminCurriculumController;
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -30,5 +31,9 @@ Route::prefix((string) config('admin.path', 'admin'))->name('admin.')->group(fun
         Route::post('/curriculum', [AdminCurriculumController::class, 'store'])->name('curriculum.store');
         Route::patch('/curriculum/{level}/toggle', [AdminCurriculumController::class, 'toggle'])->name('curriculum.toggle');
         Route::put('/curriculum/{level}', [AdminCurriculumController::class, 'update'])->name('curriculum.update');
+
+        Route::get('/audio', [AdminAudioController::class, 'index'])->name('audio.index');
+        Route::post('/audio/upload', [AdminAudioController::class, 'upload'])->name('audio.upload');
+        Route::delete('/audio/{category}/{clipName}', [AdminAudioController::class, 'destroy'])->name('audio.destroy');
     });
 });

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../content/content_engine.dart';
@@ -132,6 +133,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _openRegistrationFlow() async {
+    unawaited((widget.ttsService ?? ParvuloTtsService.shared).stopPlayback());
     await Navigator.of(context).pushNamed(ParentRegistrationFlowScreen.routeName);
     if (mounted) {
       setState(() {});
@@ -139,7 +141,11 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _openLevel(CurriculumLevelModel level) async {
-    await Navigator.of(context).pushNamed('/minigame', arguments: level);
+    unawaited((widget.ttsService ?? ParvuloTtsService.shared).stopPlayback());
+    await Navigator.of(context).pushNamed(
+      '/minigame',
+      arguments: level,
+    );
     if (mounted) {
       setState(() {});
     }
@@ -199,6 +205,7 @@ class _HomeScreenState extends State<HomeScreen>
                 icon: const Icon(Icons.settings_rounded, color: AppColors.navy, size: 26),
                 tooltip: 'Zona de padres y educadores',
                 onPressed: () {
+                  (widget.ttsService ?? ParvuloTtsService.shared).stopPlayback();
                   Navigator.of(context).pushNamed(ParentSettingsScreen.routeName);
                 },
               ),
@@ -217,6 +224,7 @@ class _HomeScreenState extends State<HomeScreen>
                 icon: const Icon(Icons.insights_rounded, color: AppColors.navy, size: 26),
                 tooltip: 'Reporte de aprendizaje',
                 onPressed: () async {
+                  await (widget.ttsService ?? ParvuloTtsService.shared).stopPlayback();
                   final report = await AppSessionState.fetchParentReport();
                   if (!context.mounted) return;
                   await Navigator.of(context).pushNamed(
@@ -271,8 +279,10 @@ class _HomeScreenState extends State<HomeScreen>
                               if (!(MediaQuery.maybeDisableAnimationsOf(context) ?? false)) {
                                 _leoJumpController.forward(from: 0.0);
                               }
-                              (widget.ttsService ?? ParvuloTtsService.shared).speak(
-                                '¡Hola $childName! Soy Leo el león. ¿Listo para jugar y aprender hoy?',
+                              (widget.ttsService ?? ParvuloTtsService.shared).playClip(
+                                'mascota/mascota_onb_saludo',
+                                fallbackText:
+                                    '¡Hola $childName! Soy Leo el león. ¿Listo para jugar y aprender hoy?',
                               );
                             },
                             semanticsLabel:
@@ -598,6 +608,7 @@ class _HomeScreenState extends State<HomeScreen>
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         ),
                         onPressed: () {
+                          (widget.ttsService ?? ParvuloTtsService.shared).stopPlayback();
                           Navigator.of(context).pushNamed(OnboardingScreen.routeName);
                         },
                       ),

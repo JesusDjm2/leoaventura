@@ -16,15 +16,22 @@ return [
 
     'root' => env('AUDIO_ROOT', base_path('assets/audio')),
 
+    // Ruta opcional al cliente Flutter para mantener sincronizado el bundle local al grabar.
+    'flutter_bundle_root' => env('AUDIO_FLUTTER_BUNDLE_ROOT', base_path('client/assets/audio')),
+
+    // Binario de ffmpeg (opcional: si es nulo se autodetecta en PATH o imageio-ffmpeg).
+    'ffmpeg_binary' => env('FFMPEG_BINARY'),
+
     // Versión del catálogo que sirve la API.
     'version' => (int) env('AUDIO_VERSION', 1),
 
-    'categories' => ['fonemas', 'palabras', 'instrucciones', 'mascota'],
+    'categories' => ['fonemas', 'palabras', 'silabas', 'instrucciones', 'mascota'],
 
     // Prefijo obligatorio del nombre de archivo según la categoría.
     'prefixes' => [
         'fonemas' => 'fonema',
         'palabras' => 'palabra',
+        'silabas' => 'silaba',
         'instrucciones' => 'instruccion',
         'mascota' => 'mascota',
     ],

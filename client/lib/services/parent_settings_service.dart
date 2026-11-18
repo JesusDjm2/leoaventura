@@ -18,6 +18,7 @@ class ParentSettingsState {
   static String voiceSpeed = 'Normal'; // 'Lenta' | 'Normal' | 'Rápida'
   static int dailyLimitMinutes = 20;
   static bool crashReportingConsent = false;
+  static bool adminAudioInspector = false;
 
   @visibleForTesting
   static void setStorageForTesting(SessionStorage storage) {
@@ -37,6 +38,7 @@ class ParentSettingsState {
     voiceSpeed = 'Normal';
     dailyLimitMinutes = 20;
     crashReportingConsent = false;
+    adminAudioInspector = false;
     SafeCrashReporter.instance.setPrivacyConsent(false);
     revision.value++;
   }
@@ -50,6 +52,7 @@ class ParentSettingsState {
       'voice_speed': voiceSpeed,
       'daily_limit_minutes': dailyLimitMinutes,
       'crash_reporting_consent': crashReportingConsent,
+      'admin_audio_inspector': adminAudioInspector,
     });
     await _storage.write(_storageKey, payload);
   }
@@ -72,6 +75,8 @@ class ParentSettingsState {
       dailyLimitMinutes = savedLimit.clamp(10, 60);
       crashReportingConsent =
           (decoded['crash_reporting_consent'] as bool?) ?? false;
+      adminAudioInspector =
+          (decoded['admin_audio_inspector'] as bool?) ?? false;
 
       SafeCrashReporter.instance.setPrivacyConsent(crashReportingConsent);
       revision.value++;

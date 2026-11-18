@@ -83,6 +83,7 @@ flutter:
     - assets/audio/v1/manifest.json
     - assets/audio/v1/fonemas/
     - assets/audio/v1/palabras/
+    - assets/audio/v1/silabas/
     - assets/audio/v1/instrucciones/
     - assets/audio/v1/mascota/
     # Fuentes empaquetadas para google_fonts (offline-first) + licencias OFL.

@@ -36,6 +36,30 @@ extension TtsServiceClipPlayback on TtsService {
     }
     return Future<void>.value();
   }
+
+  /// Detiene cualquier clip o locución activa de forma segura (compatible con mocks).
+  Future<void> stopPlayback() {
+    if (this is ClipAwareTtsService) {
+      return (this as ClipAwareTtsService).stop();
+    }
+    return Future<void>.value();
+  }
+}
+
+/// Evento observable del último audio reproducido (para el Indicador Admin
+/// que diferencia grabaciones humanas reales de la voz sintética temporal).
+class AudioPlaybackEvent {
+  final bool isRecorded;
+  final String? clipId;
+  final String text;
+  final DateTime timestamp;
+
+  const AudioPlaybackEvent({
+    required this.isRecorded,
+    required this.text,
+    this.clipId,
+    required this.timestamp,
+  });
 }
 
 /// Servicio híbrido de audio real para párvulos (Sprint A — Paso 2):
@@ -51,10 +75,15 @@ class ParvuloTtsService implements ClipAwareTtsService {
   /// Instancia compartida para toda la app viva (evita crear múltiples reproductores).
   static ParvuloTtsService get shared => _sharedInstance ??= ParvuloTtsService();
 
+  /// Último evento de audio reproducido (grabado vs. sintético) para inspección admin.
+  static final ValueNotifier<AudioPlaybackEvent?> lastPlayback =
+      ValueNotifier<AudioPlaybackEvent?>(null);
+
   final ClipAudioPlayer _clipPlayer;
   final SpeechSynthesizer _synthesizer;
   final bool _enableLiveOutput;
   final List<String> _logs = [];
+  int _playbackSeq = 0;
 
   ParvuloTtsService({
     ClipAudioPlayer? clipPlayer,
@@ -83,12 +112,21 @@ class ParvuloTtsService implements ClipAwareTtsService {
     final cleaned = text.trim();
     if (cleaned.isEmpty) return;
 
+    final seq = ++_playbackSeq;
     _logs.add(cleaned);
     debugPrint('[AudioTTS] Fonema/Instrucción reproducida: "$cleaned"');
+    lastPlayback.value = AudioPlaybackEvent(
+      isRecorded: false,
+      text: cleaned,
+      timestamp: DateTime.now(),
+    );
 
     if (!_enableLiveOutput || !ParentSettingsState.audioFeedback) return;
 
     await _clipPlayer.stop();
+    if (seq != _playbackSeq) return;
+    await _synthesizer.stop();
+    if (seq != _playbackSeq) return;
     await _synthesizer.speak(
       cleaned,
       rate: ParentSettingsState.speechRate,
@@ -99,6 +137,7 @@ class ParvuloTtsService implements ClipAwareTtsService {
   Future<void> playClip(String? clipId, {String? fallbackText}) async {
     final normalizedClip = clipId?.trim();
     final fallback = fallbackText?.trim();
+    final seq = ++_playbackSeq;
 
     if (fallback != null && fallback.isNotEmpty) {
       _logs.add(fallback);
@@ -108,18 +147,41 @@ class ParvuloTtsService implements ClipAwareTtsService {
 
     if (!_enableLiveOutput || !ParentSettingsState.audioFeedback) return;
 
+    // Detiene SIEMPRE cualquier audio previo (grabado o sintético) de inmediato
+    // para que jamás se arrastre o repita un fonema de una pantalla anterior.
+    await _clipPlayer.stop();
+    if (seq != _playbackSeq) return;
+    await _synthesizer.stop();
+    if (seq != _playbackSeq) return;
+
     if (normalizedClip != null && normalizedClip.isNotEmpty) {
       await _clipPlayer.ensureInitialized();
+      if (seq != _playbackSeq) return;
       if (_clipPlayer.hasClip(normalizedClip)) {
-        await _synthesizer.stop();
         debugPrint('[AudioClip] Reproduciendo grabación humana: "$normalizedClip"');
         final played = await _clipPlayer.playClip(normalizedClip);
-        if (played) return;
+        if (seq != _playbackSeq) return;
+        if (played) {
+          lastPlayback.value = AudioPlaybackEvent(
+            isRecorded: true,
+            clipId: normalizedClip,
+            text: fallback ?? normalizedClip,
+            timestamp: DateTime.now(),
+          );
+          return;
+        }
       }
     }
 
+    if (seq != _playbackSeq) return;
     if (fallback != null && fallback.isNotEmpty) {
       debugPrint('[AudioTTS] Fallback hablado: "$fallback"');
+      lastPlayback.value = AudioPlaybackEvent(
+        isRecorded: false,
+        clipId: normalizedClip,
+        text: fallback,
+        timestamp: DateTime.now(),
+      );
       await _synthesizer.speak(
         fallback,
         rate: ParentSettingsState.speechRate,
@@ -129,6 +191,7 @@ class ParvuloTtsService implements ClipAwareTtsService {
 
   @override
   Future<void> stop() async {
+    _playbackSeq++;
     if (!_enableLiveOutput) return;
     await _clipPlayer.stop();
     await _synthesizer.stop();

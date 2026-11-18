@@ -119,6 +119,7 @@ class _SoundMatchGameState extends State<SoundMatchGame>
 
   @override
   void dispose() {
+    _ttsService.stopPlayback();
     _waveController.dispose();
     _wiggleController.dispose();
     super.dispose();
@@ -146,7 +147,10 @@ class _SoundMatchGameState extends State<SoundMatchGame>
     if (item.isCorrect) {
       // Disparo inmediato de audio fonético + vibración de éxito + estado Rive Happy
       HapticService.mediumImpact();
-      _ttsService.speak('¡Excelente! ${item.feedbackText}');
+      _ttsService.playClip(
+        item.audioKey.isNotEmpty ? item.audioKey : 'mascota/mascota_exi_bien_hecho',
+        fallbackText: '¡Excelente! ${item.feedbackText}',
+      );
       setState(() {
         _isSuccess = true;
         _wigglingItem = null;
@@ -155,7 +159,10 @@ class _SoundMatchGameState extends State<SoundMatchGame>
       widget.onComplete?.call();
     } else {
       // Feedback empático no punitivo + wiggle cariñoso + pista tras 2 fallos
-      _ttsService.speak('¡Casi! ${item.feedbackText} Prueba con otro.');
+      _ttsService.playClip(
+        'mascota/mascota_err_cerca',
+        fallbackText: '¡Casi! ${item.feedbackText} Prueba con otro.',
+      );
       setState(() {
         _missCount++;
         _wigglingItem = item.name;

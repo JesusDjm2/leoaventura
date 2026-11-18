@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../content/activity_model.dart';
+import '../services/bundled_clip_player.dart';
 import '../services/haptic_service.dart';
 import '../services/tts_service.dart';
 import '../theme/app_theme.dart';
@@ -72,8 +73,18 @@ class _SyllableBuilderGameState extends State<SyllableBuilderGame> {
     super.initState();
     _ttsService = widget.ttsService ?? ParvuloTtsService.shared;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _ttsService.speak('Junta la letra $_consonantUpper con una vocal.');
+      if (!mounted) return;
+      _ttsService.playClip(
+        'instrucciones/instruccion_silaba_junta',
+        fallbackText: 'Junta la letra $_consonantUpper con una vocal.',
+      );
     });
+  }
+
+  @override
+  void dispose() {
+    _ttsService.stopPlayback();
+    super.dispose();
   }
 
   void _onVowelTapped(String vowel) {
@@ -82,8 +93,11 @@ class _SyllableBuilderGameState extends State<SyllableBuilderGame> {
         ? ' ¡$syllable como en ${widget.exampleWord}!'
         : ' ¡Muy bien!';
 
-    // Disparo fonético inmediato (< 100 ms) para QA de latencia
-    _ttsService.speak('¡La $_consonantUpper con la $vowel suena $syllable!$wordHint');
+    // Disparo fonético inmediato (< 100 ms): usa tu grabación de la sílaba si existe
+    _ttsService.playClip(
+      'silabas/silaba_${normalizeAudioSlug(syllable)}',
+      fallbackText: '¡La $_consonantUpper con la $vowel suena $syllable!$wordHint',
+    );
 
     setState(() {
       _selectedVowel = vowel;

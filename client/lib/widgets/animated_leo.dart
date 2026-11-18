@@ -249,6 +249,10 @@ class AnimatedLeo extends StatefulWidget {
   /// Muestra una etiqueta empática breve debajo de la mascota cuando cambia de ánimo.
   final bool showMoodBadge;
 
+  /// Activa el renderizado visual del artboard `.riv` (mantener `false` mientras
+  /// `leo_mascot.riv` sea el asset de prueba y mostrar el arte oficial de Leo).
+  final bool preferRiveArtboard;
+
   const AnimatedLeo({
     super.key,
     this.state = AnimatedLeoStateName.idle,
@@ -258,6 +262,7 @@ class AnimatedLeo extends StatefulWidget {
     this.driver,
     this.onStateMachineReady,
     this.showMoodBadge = false,
+    this.preferRiveArtboard = false,
   });
 
   @override
@@ -460,17 +465,25 @@ class AnimatedLeoState extends State<AnimatedLeo> {
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
 
-    final Widget visual = (!_usingFallbackVisual && _artboard != null && !reduceMotion)
+    final Widget visual = (widget.preferRiveArtboard &&
+            !_usingFallbackVisual &&
+            _artboard != null &&
+            !reduceMotion)
         ? Rive(
             key: Key('animated_leo_rive_$currentState'),
             artboard: _artboard!,
             fit: BoxFit.contain,
             useArtboardSize: false,
           )
-        : LeoMascot(
-            key: Key('animated_leo_visual_$currentState'),
-            state: _fallbackMascotState,
-            size: widget.size * 0.88,
+        : AnimatedScale(
+            scale: currentState == AnimatedLeoStateName.happy ? 1.08 : 1.0,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutBack,
+            child: LeoMascot(
+              key: Key('animated_leo_visual_$currentState'),
+              state: _fallbackMascotState,
+              size: widget.size * 0.88,
+            ),
           );
 
     return Semantics(

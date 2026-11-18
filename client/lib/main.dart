@@ -12,6 +12,7 @@ import 'screens/ui_playground_screen.dart';
 import 'services/parent_settings_service.dart';
 import 'services/tts_service.dart';
 import 'theme/app_theme.dart';
+import 'widgets/admin_audio_inspector_banner.dart';
 import 'widgets/bouncy_button.dart';
 import 'widgets/flying_stars_overlay.dart';
 import 'widgets/primary_button.dart';
@@ -50,7 +51,30 @@ class LeoParvulosApp extends StatelessWidget {
       title: 'Leoaventura - Minijuegos de Lectura',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
+      builder: (context, child) => Stack(
+        children: [
+          if (child != null) child,
+          const AdminAudioInspectorBanner(),
+        ],
+      ),
       home: const HomeScreen(),
+      onGenerateRoute: (settings) {
+        final name = settings.name ?? '';
+        if (name.startsWith('/minigame/')) {
+          final slug = Uri.decodeComponent(name.substring('/minigame/'.length)).trim();
+          final args = settings.arguments;
+          final level = args is CurriculumLevelModel
+              ? args
+              : DefaultCurriculumCatalog.levelForLetter(
+                  slug == 'enie' ? 'ñ' : slug,
+                );
+          return MaterialPageRoute<void>(
+            settings: settings,
+            builder: (_) => TracingGameScreen(level: level),
+          );
+        }
+        return null;
+      },
       routes: {
         HomeScreen.routeName: (_) => const HomeScreen(),
         ParentRegistrationFlowScreen.routeName: (_) =>
@@ -107,6 +131,14 @@ class _TracingGameScreenState extends State<TracingGameScreen> {
     _level = DefaultCurriculumCatalog.augmentLevelWithSyllables(
       widget.level ?? DefaultCurriculumCatalog.levelForLetter('m'),
     );
+  }
+
+  TtsService get _effectiveTts => widget.ttsService ?? ParvuloTtsService.shared;
+
+  @override
+  void dispose() {
+    unawaited(_effectiveTts.stopPlayback());
+    super.dispose();
   }
 
   ActivityModel get _activeActivity => _level.activities[_activeIndex];
@@ -175,6 +207,7 @@ class _TracingGameScreenState extends State<TracingGameScreen> {
 
   void _selectStep(int index) {
     if (index < 0 || index >= _level.activities.length) return;
+    unawaited(_effectiveTts.stopPlayback());
     setState(() {
       _activeIndex = index;
       _currentStepDone = false;
@@ -183,6 +216,7 @@ class _TracingGameScreenState extends State<TracingGameScreen> {
   }
 
   void _goNextOrFinish() {
+    unawaited(_effectiveTts.stopPlayback());
     if (_activeIndex + 1 < _level.activities.length) {
       _selectStep(_activeIndex + 1);
     } else {
@@ -246,6 +280,7 @@ class _TracingGameScreenState extends State<TracingGameScreen> {
               tooltip: 'Panel de padres y docentes',
               icon: const Icon(Icons.insights_rounded, color: AppColors.navy),
               onPressed: () async {
+                await _effectiveTts.stopPlayback();
                 final report = await AppSessionState.fetchParentReport();
                 if (!context.mounted) return;
                 await Navigator.of(context).pushNamed(

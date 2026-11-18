@@ -64,6 +64,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    _ttsService.stopPlayback();
+    super.dispose();
+  }
+
   void _selectAvatar(int index) {
     setState(() => _selectedAvatar = index);
     AppSessionState.activeAvatarKey = _avatars[index]['key']!;

@@ -1,8 +1,8 @@
 {
     "schema": 1,
     "version": 1,
-    "manifest_hash": "6519fba52222e45b3227db510dff0ca7900fc3b14c51deb14990c2d437f06e62",
-    "clip_count": 5,
+    "manifest_hash": "1bead3ed24a1f658161cf42180b7c66ba9412910b3ba6e8ca04c7f4147ad6acd",
+    "clip_count": 37,
     "clips": {
         "fonemas/fonema_a": {
             "category": "fonemas",
@@ -10,13 +10,45 @@
             "files": {
                 "aac": {
                     "path": "fonemas/fonema_a.m4a",
-                    "bytes": 8505,
-                    "sha256": "7243d870af7c454b0c0b73aa8e78fd442373169ae122b0bca91d0ae6844b1f87"
+                    "bytes": 5470,
+                    "sha256": "5670851a1dda3a170fb9edce84eca71fcbebbd67c77fa4b4d8686566269da522"
                 },
                 "opus": {
                     "path": "fonemas/fonema_a.opus",
-                    "bytes": 6227,
-                    "sha256": "d1fc38f84515f81fa251cc22b5a428924024a68ddfeb01506b48effd3c5b041b"
+                    "bytes": 2363,
+                    "sha256": "89557102c4de4d3baf3db56c927c94c2c03bc6f9b3a37d2594bdf50ee94c3ed9"
+                }
+            }
+        },
+        "fonemas/fonema_e": {
+            "category": "fonemas",
+            "name": "fonema_e",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_e.m4a",
+                    "bytes": 6538,
+                    "sha256": "f47ca99c8a79926622fd2fbacaf3aff0670f3c77f28b2a517d7bc07993d9dec0"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_e.opus",
+                    "bytes": 2873,
+                    "sha256": "d77e197fda4cbe6fd60384a780092dd1bc8f9ec6186aa8c0cd48a41858e688c7"
+                }
+            }
+        },
+        "fonemas/fonema_i": {
+            "category": "fonemas",
+            "name": "fonema_i",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_i.m4a",
+                    "bytes": 6362,
+                    "sha256": "57b60c1cf8732c0afb595baeb4240bd176fa44b3b436329da1d4e220113349b9"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_i.opus",
+                    "bytes": 2881,
+                    "sha256": "8fc207d1fce1fa241da5d54fb055fa7671f87ec9760c1e689e243eff7267e6f4"
                 }
             }
         },
@@ -26,13 +58,45 @@
             "files": {
                 "aac": {
                     "path": "fonemas/fonema_m.m4a",
-                    "bytes": 8602,
-                    "sha256": "d8cc9874a7cc1abd1fb3b9263eca80f0c09bad2d3e4c788d6f209325a9724da6"
+                    "bytes": 10582,
+                    "sha256": "2392303b810c8d7d9dce4a52c17105e9fbdf9bd4da47ac15719edb720795c97b"
                 },
                 "opus": {
                     "path": "fonemas/fonema_m.opus",
-                    "bytes": 6916,
-                    "sha256": "13b2d6f69cfc58f75ef757b495fe8506d9739ebf8ec9bf39b079bf4501626cd6"
+                    "bytes": 4806,
+                    "sha256": "9057639e087b42f708c0f0bab91e969295810520c1f400c34f9e77a1d9c70e4f"
+                }
+            }
+        },
+        "fonemas/fonema_n": {
+            "category": "fonemas",
+            "name": "fonema_n",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_n.m4a",
+                    "bytes": 10358,
+                    "sha256": "8de23e6000a963b1199f556bd885ebbb10ee893500e6e379e8a92e0272122738"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_n.opus",
+                    "bytes": 4658,
+                    "sha256": "5da468301ca92f5df223993e8b82d6eb66648eb3add3ce01e8d68725e63bc1f2"
+                }
+            }
+        },
+        "fonemas/fonema_o": {
+            "category": "fonemas",
+            "name": "fonema_o",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_o.m4a",
+                    "bytes": 7234,
+                    "sha256": "ec3ff9085b3749fd42746278b29bc60a67188760bff0684774a8b10d48d148f0"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_o.opus",
+                    "bytes": 3300,
+                    "sha256": "ab61232c0f9955bd80114efdfda53b1755672d2559289066e62b838ab36bb4b1"
                 }
             }
         },
@@ -42,13 +106,29 @@
             "files": {
                 "aac": {
                     "path": "fonemas/fonema_p.m4a",
-                    "bytes": 4410,
-                    "sha256": "c038fd142a6ab2cdaee5273bf56d1460683b389733e346b67fd48b3e9576357f"
+                    "bytes": 5932,
+                    "sha256": "56bb8de5449b10b82d0d260fa598e92fa55b91f6d421811994e8c3d1ebe27b01"
                 },
                 "opus": {
                     "path": "fonemas/fonema_p.opus",
-                    "bytes": 3292,
-                    "sha256": "438f5f14ae6ea77fd4fc379d35c1f0883f0aac443e8b9074b5bbf9484d379ac7"
+                    "bytes": 2359,
+                    "sha256": "f526e4eaf0ea841cedf75a2985d239b73b80671a7c20029a873efc3124470a69"
+                }
+            }
+        },
+        "fonemas/fonema_r": {
+            "category": "fonemas",
+            "name": "fonema_r",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_r.m4a",
+                    "bytes": 11626,
+                    "sha256": "7ebcf5a006855781628bce51817bc8a1c9e768f4e1b57b372b17a44fde342715"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_r.opus",
+                    "bytes": 6338,
+                    "sha256": "c2fac3b74292c3cbb360bfd380758d3458f4db7499b027ab604afa8217303b3a"
                 }
             }
         },
@@ -58,13 +138,125 @@
             "files": {
                 "aac": {
                     "path": "fonemas/fonema_s.m4a",
-                    "bytes": 8505,
-                    "sha256": "60a4d760910099ff8253578d69ba74a25eb36005301c9ea799a10b95973383b8"
+                    "bytes": 17321,
+                    "sha256": "52d0336ae8d6532952683dc58958c8d2336214a3afb6f45a4531c3fd2a5cd441"
                 },
                 "opus": {
                     "path": "fonemas/fonema_s.opus",
-                    "bytes": 6581,
-                    "sha256": "7160ae55a69ea9f22148a9db661b51f2c6d10e1be704682a5c9ece84a45e0312"
+                    "bytes": 7927,
+                    "sha256": "75b1ac558f0ac40ed29cc082f6ea118612300795dee4f0651fd87eb22402b975"
+                }
+            }
+        },
+        "fonemas/fonema_t": {
+            "category": "fonemas",
+            "name": "fonema_t",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_t.m4a",
+                    "bytes": 3959,
+                    "sha256": "61dbf17c7f3a4e94b98e1c72b4f3b5abcb7fd538a3c0c85df903b3bf6fcdcb53"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_t.opus",
+                    "bytes": 1465,
+                    "sha256": "2b46411a4c1cf73b8f783be2ea57b3a3c7701d8c329636e73edd28e26a770d13"
+                }
+            }
+        },
+        "fonemas/fonema_u": {
+            "category": "fonemas",
+            "name": "fonema_u",
+            "files": {
+                "aac": {
+                    "path": "fonemas/fonema_u.m4a",
+                    "bytes": 7684,
+                    "sha256": "1f0c74eeab3a25e712182739cd28450c56e358888d1b278ff38b1fcd8aa242e9"
+                },
+                "opus": {
+                    "path": "fonemas/fonema_u.opus",
+                    "bytes": 3375,
+                    "sha256": "3b8971255cd42649c7c6665900e8acf338a4c05ba30f0ea2afad8ee86760b080"
+                }
+            }
+        },
+        "instrucciones/instruccion_casi_intenta": {
+            "category": "instrucciones",
+            "name": "instruccion_casi_intenta",
+            "files": {
+                "aac": {
+                    "path": "instrucciones/instruccion_casi_intenta.m4a",
+                    "bytes": 30997,
+                    "sha256": "a5e53c4dee153f04c348e553cacbde966ddbae9f5d8bc91d8466e94ca88c87b8"
+                },
+                "opus": {
+                    "path": "instrucciones/instruccion_casi_intenta.opus",
+                    "bytes": 14582,
+                    "sha256": "36c62eb29382b7eb8518aa0243f7176c1fb5fee91b89bfa99973e59a6b40498a"
+                }
+            }
+        },
+        "instrucciones/instruccion_excelente": {
+            "category": "instrucciones",
+            "name": "instruccion_excelente",
+            "files": {
+                "aac": {
+                    "path": "instrucciones/instruccion_excelente.m4a",
+                    "bytes": 29844,
+                    "sha256": "76a5918b15316757f96eefb6425e389c91d22414de8d57df1f1de2448a10e49a"
+                },
+                "opus": {
+                    "path": "instrucciones/instruccion_excelente.opus",
+                    "bytes": 14348,
+                    "sha256": "4bd8b1c88fdc185826ddb31b59ef02d64745d1247e7bbff32a6af664a2794051"
+                }
+            }
+        },
+        "instrucciones/instruccion_leer_silabas": {
+            "category": "instrucciones",
+            "name": "instruccion_leer_silabas",
+            "files": {
+                "aac": {
+                    "path": "instrucciones/instruccion_leer_silabas.m4a",
+                    "bytes": 35054,
+                    "sha256": "22aaf2a6cb00e04ceefa1648f6c40c71ffa2f0e1910c927561837fcee15882b5"
+                },
+                "opus": {
+                    "path": "instrucciones/instruccion_leer_silabas.opus",
+                    "bytes": 17469,
+                    "sha256": "ad3cbb60a58bc3cb34b442a35544c152aa325e125670b3ccfe675e3a7e43b42c"
+                }
+            }
+        },
+        "instrucciones/instruccion_reintentar": {
+            "category": "instrucciones",
+            "name": "instruccion_reintentar",
+            "files": {
+                "aac": {
+                    "path": "instrucciones/instruccion_reintentar.m4a",
+                    "bytes": 23110,
+                    "sha256": "8d0a6eb88cf669b1690b9b565817d4f45ce1c3042e8e88db9ec6303ad821bcec"
+                },
+                "opus": {
+                    "path": "instrucciones/instruccion_reintentar.opus",
+                    "bytes": 11118,
+                    "sha256": "22548c68a29ae505ead99038d42eac6e3e2c44d4ceb0ee3337ffd7871d1853f0"
+                }
+            }
+        },
+        "instrucciones/instruccion_sonido_match": {
+            "category": "instrucciones",
+            "name": "instruccion_sonido_match",
+            "files": {
+                "aac": {
+                    "path": "instrucciones/instruccion_sonido_match.m4a",
+                    "bytes": 33796,
+                    "sha256": "24802be65970fc5567fe92e003da96a9dbc3a16f6e885e093f2c4c565ba257a5"
+                },
+                "opus": {
+                    "path": "instrucciones/instruccion_sonido_match.opus",
+                    "bytes": 16392,
+                    "sha256": "b843c8279b59c72b3a3d39f728c78e3a860869fbc29f6b4e19ee8b384be779f5"
                 }
             }
         },
@@ -74,13 +266,333 @@
             "files": {
                 "aac": {
                     "path": "instrucciones/instruccion_traza_letra.m4a",
-                    "bytes": 14628,
-                    "sha256": "9c11ff0ef06b3711f307c86847333d3f773e81949106b0bc2775ffc616475045"
+                    "bytes": 33511,
+                    "sha256": "15d446cac894c0e1887040b2dcfdb6833b96aa91ea3d9ad67db880af1a3f4606"
                 },
                 "opus": {
                     "path": "instrucciones/instruccion_traza_letra.opus",
-                    "bytes": 10986,
-                    "sha256": "39e66b5ce10cf2e4efdb922cbabaad95fb460da8135eb4ebfb34d05f0a527f1e"
+                    "bytes": 16515,
+                    "sha256": "a22e5a1aae7f2f14e40cd9744975f9a02f89c8814433b884cc55962ed3d8fcb9"
+                }
+            }
+        },
+        "mascota/mascota_onb_avatar": {
+            "category": "mascota",
+            "name": "mascota_onb_avatar",
+            "files": {
+                "aac": {
+                    "path": "mascota/mascota_onb_avatar.m4a",
+                    "bytes": 10218,
+                    "sha256": "24bd202da6b72f7dfa3a13c605564e4f497291777422f538e58696f7794511a9"
+                },
+                "opus": {
+                    "path": "mascota/mascota_onb_avatar.opus",
+                    "bytes": 4858,
+                    "sha256": "106660a1c3b03ed20c9470cfdb44caa0ba1e9189374e9725bb88cc35ed8b3951"
+                }
+            }
+        },
+        "mascota/mascota_onb_saludo": {
+            "category": "mascota",
+            "name": "mascota_onb_saludo",
+            "files": {
+                "aac": {
+                    "path": "mascota/mascota_onb_saludo.m4a",
+                    "bytes": 23508,
+                    "sha256": "86a402a35e4792a1bc9b14564e00ce1b977d3be10dd36fd98e43a39009a29ebf"
+                },
+                "opus": {
+                    "path": "mascota/mascota_onb_saludo.opus",
+                    "bytes": 11389,
+                    "sha256": "cf3a13a95fce8c293ee9d8d5b254fd06e1c6ee364212248385fb834ff7efe28b"
+                }
+            }
+        },
+        "palabras/palabra_arbol": {
+            "category": "palabras",
+            "name": "palabra_arbol",
+            "files": {
+                "aac": {
+                    "path": "palabras/palabra_arbol.m4a",
+                    "bytes": 7462,
+                    "sha256": "1144dc0e5a2e412545869680f67eb686088c77d2d2b206024ea7157858b4b475"
+                },
+                "opus": {
+                    "path": "palabras/palabra_arbol.opus",
+                    "bytes": 3437,
+                    "sha256": "b5b08d70dfa80e31fe378cd29f8765baf7a35aedab4b2dbe2657fbba426d0d54"
+                }
+            }
+        },
+        "palabras/palabra_elefante": {
+            "category": "palabras",
+            "name": "palabra_elefante",
+            "files": {
+                "aac": {
+                    "path": "palabras/palabra_elefante.m4a",
+                    "bytes": 10778,
+                    "sha256": "55eabe05ba30c6c77e7b04089d0f1e5a3f09e46243e2226af2f7189cc747909b"
+                },
+                "opus": {
+                    "path": "palabras/palabra_elefante.opus",
+                    "bytes": 5083,
+                    "sha256": "565fee00cf939e0353124fca3ca7ebb3a2c5bbdac6f22a6463675d05725262c7"
+                }
+            }
+        },
+        "palabras/palabra_isla": {
+            "category": "palabras",
+            "name": "palabra_isla",
+            "files": {
+                "aac": {
+                    "path": "palabras/palabra_isla.m4a",
+                    "bytes": 9157,
+                    "sha256": "6fd6c285c5198ad03f6ca91fb45713bacc2ade33e2af8a817f395e72f3a43a80"
+                },
+                "opus": {
+                    "path": "palabras/palabra_isla.opus",
+                    "bytes": 4279,
+                    "sha256": "79050df70204198234ac5b1544cd3929d5b8b8cdeff642b7ba3b14f7785cb3db"
+                }
+            }
+        },
+        "palabras/palabra_luna": {
+            "category": "palabras",
+            "name": "palabra_luna",
+            "files": {
+                "aac": {
+                    "path": "palabras/palabra_luna.m4a",
+                    "bytes": 11414,
+                    "sha256": "888c009e02ff6a245aa10cbdcf33905804548d35a9ac200b5c976e222d85c60d"
+                },
+                "opus": {
+                    "path": "palabras/palabra_luna.opus",
+                    "bytes": 5472,
+                    "sha256": "5e8ad023c6aa4874039ccc6e86e517344fe38c904b301634422102601ba37b0a"
+                }
+            }
+        },
+        "palabras/palabra_oso": {
+            "category": "palabras",
+            "name": "palabra_oso",
+            "files": {
+                "aac": {
+                    "path": "palabras/palabra_oso.m4a",
+                    "bytes": 9560,
+                    "sha256": "09b81201aff0c019d33b9ea8cc3b0193d650a1c875d32e94b3a9b3c22a1c5aaa"
+                },
+                "opus": {
+                    "path": "palabras/palabra_oso.opus",
+                    "bytes": 4317,
+                    "sha256": "622b6a8eb74e780186cac992a332bb85a56704ec348b998b9cd700326d53d718"
+                }
+            }
+        },
+        "palabras/palabra_pato": {
+            "category": "palabras",
+            "name": "palabra_pato",
+            "files": {
+                "aac": {
+                    "path": "palabras/palabra_pato.m4a",
+                    "bytes": 9388,
+                    "sha256": "dd7f00b3b7bc1b0575282d8a33b770db1a0a01e698067e1c3deac7a54018f54e"
+                },
+                "opus": {
+                    "path": "palabras/palabra_pato.opus",
+                    "bytes": 4121,
+                    "sha256": "11b1d54b03a8cd28df37d1e263592f3f19d3b6057d4e1e75446c133376b8b182"
+                }
+            }
+        },
+        "palabras/palabra_sol": {
+            "category": "palabras",
+            "name": "palabra_sol",
+            "files": {
+                "aac": {
+                    "path": "palabras/palabra_sol.m4a",
+                    "bytes": 8333,
+                    "sha256": "064c6b92aeb87961bb180998e72de81878664f4d99868bb0e8f6b4036917ce12"
+                },
+                "opus": {
+                    "path": "palabras/palabra_sol.opus",
+                    "bytes": 3741,
+                    "sha256": "088b05672da212a01fc5b82a5c72c403ce797a7e4e35ce493be8b919d84c56bb"
+                }
+            }
+        },
+        "palabras/palabra_uva": {
+            "category": "palabras",
+            "name": "palabra_uva",
+            "files": {
+                "aac": {
+                    "path": "palabras/palabra_uva.m4a",
+                    "bytes": 8856,
+                    "sha256": "04e2b69a689c9b1fbc996950b09a9a8cffd10b82bebb330145c1a102b1660ae1"
+                },
+                "opus": {
+                    "path": "palabras/palabra_uva.opus",
+                    "bytes": 4023,
+                    "sha256": "49c11dc8da3a5c9ad54d42cc60eaa2be02c056fa1f68875595626d20f0320a5d"
+                }
+            }
+        },
+        "silabas/silaba_ar": {
+            "category": "silabas",
+            "name": "silaba_ar",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_ar.m4a",
+                    "bytes": 5905,
+                    "sha256": "62ca2ec18b341ff462141fbc1ca2c4b8e768e3e58d2f2c78d3209e3781f94348"
+                },
+                "opus": {
+                    "path": "silabas/silaba_ar.opus",
+                    "bytes": 2653,
+                    "sha256": "6f625836390d2f5f296af03fb44a5ec41abd792668ee380db0db69889210a796"
+                }
+            }
+        },
+        "silabas/silaba_bol": {
+            "category": "silabas",
+            "name": "silaba_bol",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_bol.m4a",
+                    "bytes": 7648,
+                    "sha256": "c6944e721af7e88020f364c2ea285863934340d7eaad457dfbe7b4350db6834a"
+                },
+                "opus": {
+                    "path": "silabas/silaba_bol.opus",
+                    "bytes": 3379,
+                    "sha256": "ffcf2f6e989272bad4fa3d1eec76f76e7d345ed09b221a60c72753bde15495cb"
+                }
+            }
+        },
+        "silabas/silaba_e": {
+            "category": "silabas",
+            "name": "silaba_e",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_e.m4a",
+                    "bytes": 6607,
+                    "sha256": "3b06653c0600799f2576d62bf058a62cef6abd15669081d1915dd96cf58fed1b"
+                },
+                "opus": {
+                    "path": "silabas/silaba_e.opus",
+                    "bytes": 2889,
+                    "sha256": "1561e3d0acb8da616e21bc600ab060c4afcce8024076ff7625a8cbe5eb591529"
+                }
+            }
+        },
+        "silabas/silaba_fan": {
+            "category": "silabas",
+            "name": "silaba_fan",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_fan.m4a",
+                    "bytes": 7031,
+                    "sha256": "7386f12d871b8e6646f5448530d6e2cee2c18214e979347a4bd378d344dd4c40"
+                },
+                "opus": {
+                    "path": "silabas/silaba_fan.opus",
+                    "bytes": 3094,
+                    "sha256": "11aee755f72b0a68ed355aa8553c0d82af02065366649689d5ebfd7461e2d5bd"
+                }
+            }
+        },
+        "silabas/silaba_is": {
+            "category": "silabas",
+            "name": "silaba_is",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_is.m4a",
+                    "bytes": 7326,
+                    "sha256": "6ba53a7da39eec4d86642cb82e3e5996995fbb303df63a34dc9d09c407b02972"
+                },
+                "opus": {
+                    "path": "silabas/silaba_is.opus",
+                    "bytes": 3305,
+                    "sha256": "5f27d2c1027f3136ee1c191b1def36460884b0965ca6f5a200002ba962033ebc"
+                }
+            }
+        },
+        "silabas/silaba_la": {
+            "category": "silabas",
+            "name": "silaba_la",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_la.m4a",
+                    "bytes": 6740,
+                    "sha256": "445028efa93a6860a4ff1805a8fed7d655529af9c33e73f3e437ee45cb763b49"
+                },
+                "opus": {
+                    "path": "silabas/silaba_la.opus",
+                    "bytes": 2999,
+                    "sha256": "8754479a74a23dfe5bde03a0425b92a8ac2fb0a466e04a19e174ec50cbcf1973"
+                }
+            }
+        },
+        "silabas/silaba_le": {
+            "category": "silabas",
+            "name": "silaba_le",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_le.m4a",
+                    "bytes": 8135,
+                    "sha256": "2c4bc1c1331fdcc7599ff8e274566658fb098daf06c20d3fde0392cf0746b735"
+                },
+                "opus": {
+                    "path": "silabas/silaba_le.opus",
+                    "bytes": 3725,
+                    "sha256": "6c482687a161cc0aa630b1ae08b18a965e94aba1b15188ff81497d3e46b2d1c3"
+                }
+            }
+        },
+        "silabas/silaba_o": {
+            "category": "silabas",
+            "name": "silaba_o",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_o.m4a",
+                    "bytes": 5883,
+                    "sha256": "27dbcb683987477544fc4fa976577fd26df23cdc5d798b30223f8ef7705a5f90"
+                },
+                "opus": {
+                    "path": "silabas/silaba_o.opus",
+                    "bytes": 2503,
+                    "sha256": "850839100860741b88748a9b8fbdf302ae85627321adbd082fd6232258c4115f"
+                }
+            }
+        },
+        "silabas/silaba_so": {
+            "category": "silabas",
+            "name": "silaba_so",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_so.m4a",
+                    "bytes": 6995,
+                    "sha256": "2025e11a0412e8e6bb5d5b3c55118a496cccd75fb16fe46c1b9d15ba2099f20a"
+                },
+                "opus": {
+                    "path": "silabas/silaba_so.opus",
+                    "bytes": 3123,
+                    "sha256": "6d10ccddeb2a3839b07747d8f6363a9259b2bef012bd0218c24b4fe196c2effd"
+                }
+            }
+        },
+        "silabas/silaba_te": {
+            "category": "silabas",
+            "name": "silaba_te",
+            "files": {
+                "aac": {
+                    "path": "silabas/silaba_te.m4a",
+                    "bytes": 5564,
+                    "sha256": "c644271c2c8ce94896a946c1041a96b7f4d682ee615b9f52a89b3c0b60b8317b"
+                },
+                "opus": {
+                    "path": "silabas/silaba_te.opus",
+                    "bytes": 2435,
+                    "sha256": "1712281ff1cdd26f92726ebc1323192742cd0ef740f343f7c391bcfc7b29b893"
                 }
             }
         }
