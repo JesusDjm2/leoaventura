@@ -48,6 +48,9 @@ dependencies:
   audio_session: ^0.2.4
   crypto: ^3.0.8
   google_fonts: ^8.1.0
+  rive: 0.13.20
+  flame: ^1.35.1
+  flutter_haptic_feedback: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -88,6 +91,8 @@ flutter:
     - assets/brand/
     # Mascota León Leo (Fase 15).
     - assets/mascot/
+    # Animaciones Rive con State Machine.
+    - assets/animations/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

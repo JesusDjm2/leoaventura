@@ -90,8 +90,18 @@ void main() {
       expect(submitBtn.width, greaterThanOrEqualTo(48.0));
       expect(submitBtn.height, greaterThanOrEqualTo(48.0));
 
-      // Resolver compuerta para validar ajustes
-      await tester.enterText(find.byKey(const Key('parental_gate_input')), '12');
+      // Resolver compuerta aleatoria leyendo la operación en pantalla
+      final questionText = tester
+          .widget<Text>(find.byKey(const Key('parental_gate_question')))
+          .data!;
+      final match = RegExp(r'(\d+)\s*×\s*(\d+)').firstMatch(questionText)!;
+      final expected =
+          int.parse(match.group(1)!) * int.parse(match.group(2)!);
+
+      await tester.enterText(
+        find.byKey(const Key('parental_gate_input')),
+        expected.toString(),
+      );
       await tester.tap(find.byKey(const Key('parental_gate_submit')));
       await tester.pumpAndSettle();
 

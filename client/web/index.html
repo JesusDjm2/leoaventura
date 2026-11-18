@@ -1,38 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Leoaventura: plataforma lúdica de lectura inicial y conciencia fonológica para niños de 3 a 6 años.">
+  <meta name="theme-color" content="#D9F0FF">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="leo_parvulos_app">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Leoaventura">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>leo_parvulos_app</title>
+  <title>Leoaventura — Aprende a Leer Jugando</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #D9F0FF;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #leo-splash {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #102B4E;
+      gap: 12px;
+    }
+    #leo-splash .title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    #leo-splash .subtitle {
+      font-size: 15px;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+  </style>
 </head>
 <body>
+  <div id="leo-splash" aria-label="Cargando Leoaventura">
+    <div class="title">🦁 Leoaventura</div>
+    <div class="subtitle">Preparando tus letras y sonidos…</div>
+  </div>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

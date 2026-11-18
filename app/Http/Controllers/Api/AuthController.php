@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
+use App\Models\ActivityProgress;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -88,6 +90,47 @@ class AuthController extends Controller
     {
         return response()->json([
             'data' => $request->user(),
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Permanently delete the authenticated parent account and all associated
+     * child profiles, progress records, and access tokens (COPPA / Store Compliance).
+     */
+    public function destroy(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = $request->user();
+
+        if (! Hash::check($validated['password'], $user->password)) {
+            return response()->json([
+                'message' => 'La contraseña actual no es correcta.',
+                'errors' => [
+                    'password' => ['La contraseña actual no es correcta.'],
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        DB::transaction(function () use ($user): void {
+            $childIds = $user->children()->pluck('id')->all();
+
+            if (! empty($childIds)) {
+                ActivityProgress::withTrashed()
+                    ->whereIn('child_id', $childIds)
+                    ->forceDelete();
+
+                $user->children()->delete();
+            }
+
+            $user->tokens()->delete();
+            $user->delete();
+        });
+
+        return response()->json([
+            'message' => 'Cuenta y datos asociados eliminados permanentemente.',
         ], Response::HTTP_OK);
     }
 }

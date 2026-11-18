@@ -14,8 +14,35 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'child.owner' => \App\Http\Middleware\EnsureChildBelongsToParent::class,
+            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
+
+        $middleware->redirectGuestsTo(static function (\Illuminate\Http\Request $request): ?string {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return null;
+            }
+
+            return route('admin.login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->reportable(function (\Throwable $e): void {
+            $request = request();
+            $hasConsent = $request !== null
+                && strtolower((string) $request->header('X-Privacy-Consent')) === 'accepted';
+
+            if (! $hasConsent) {
+                return;
+            }
+
+            app(\App\Support\Observability\CrashReporter::class)->captureException(
+                exception: $e,
+                privacyConsentAccepted: true,
+                extra: [
+                    'path' => $request->path(),
+                    'method' => $request->method(),
+                ],
+                tags: ['layer' => 'backend'],
+            );
+        });
     })->create();

@@ -1,8 +1,8 @@
 # Informe de Auditoría COPPA y Protección de PII - LeoPárvulos
 
-**Fecha de Auditoría:** 2026-11-16T01:46:11+00:00
+**Fecha de Auditoría:** 2026-11-18T03:45:25+00:00
 **Herramienta:** `php artisan pii:scan` (Verificación Determinista)
-**Archivos Auditados:** 31 (Laravel Controllers/Models/Routes + Flutter Client Lib)
+**Archivos Auditados:** 84 (Laravel Controllers/Models/Routes + Flutter Client Lib)
 **Hallazgos Severidad Alta:** 0
 **Estado Global:** APROBADO (Apto para tiendas infantiles / COPPA Compliant)
 

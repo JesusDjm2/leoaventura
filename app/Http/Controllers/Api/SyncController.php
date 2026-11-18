@@ -7,11 +7,63 @@ use App\Http\Requests\Api\SyncProgressRequest;
 use App\Models\ActivityProgress;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class SyncController extends Controller
 {
+    /**
+     * Devuelve el progreso sincronizado de los perfiles infantiles del padre autenticado.
+     * Soporta filtro opcional ?child_id= validando estricto aislamiento de propietario.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $children = $user->children()
+            ->select(['id', 'name', 'avatar_key', 'reading_level'])
+            ->get();
+
+        $authorizedChildIds = $children->pluck('id')->all();
+        $childNamesById = $children->pluck('name', 'id');
+
+        $requestedChildId = $request->query('child_id');
+        if ($requestedChildId !== null && $requestedChildId !== '') {
+            $childId = (int) $requestedChildId;
+            if (! in_array($childId, $authorizedChildIds, true)) {
+                abort(
+                    Response::HTTP_FORBIDDEN,
+                    "Acceso denegado: el perfil infantil con ID {$childId} no pertenece al usuario autenticado."
+                );
+            }
+            $targetChildIds = [$childId];
+        } else {
+            $targetChildIds = $authorizedChildIds;
+        }
+
+        $records = ActivityProgress::query()
+            ->select(['id', 'child_id', 'activity_id', 'score', 'stars', 'metadata', 'updated_at'])
+            ->whereIn('child_id', $targetChildIds)
+            ->orderByDesc('updated_at')
+            ->get();
+
+        return response()->json([
+            'children' => $children->values()->all(),
+            'total_completed' => $records->count(),
+            'total_stars' => (int) $records->sum('stars'),
+            'progress' => $records->map(static fn (ActivityProgress $row): array => [
+                'id' => $row->id,
+                'child_id' => $row->child_id,
+                'child_name' => $childNamesById->get($row->child_id),
+                'activity_id' => $row->activity_id,
+                'score' => $row->score,
+                'stars' => $row->stars,
+                'metadata' => $row->metadata,
+                'updated_at' => optional($row->updated_at)->toIso8601String(),
+            ])->values()->all(),
+        ], Response::HTTP_OK);
+    }
+
     /**
      * Synchronize a batch of activity progress events using Last-Write-Wins (LWW).
      */

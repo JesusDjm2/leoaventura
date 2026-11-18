@@ -1,11 +1,11 @@
 {
-    "name": "leo_parvulos_app",
-    "short_name": "leo_parvulos_app",
+    "name": "Leoaventura — Aprende a Leer Jugando",
+    "short_name": "Leoaventura",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#D9F0FF",
+    "theme_color": "#102B4E",
+    "description": "Plataforma infantil de alfabetización inicial por fonética sintética con el León Leo.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

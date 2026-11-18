@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/haptic_service.dart';
 import '../theme/app_theme.dart';
 
 /// Botón interactivo principal para LeoPárvulos (Fase 14).
@@ -55,6 +56,7 @@ class _PrimaryButtonState extends State<PrimaryButton> {
 
   void _handleTapDown(TapDownDetails _) {
     if (_isEnabled) {
+      HapticService.lightImpact();
       setState(() => _isPressed = true);
     }
   }
@@ -125,6 +127,9 @@ class _PrimaryButtonState extends State<PrimaryButton> {
       );
     }
 
+    final reduceMotion = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final pressScale = (_isEnabled && _isPressed && !reduceMotion) ? 0.95 : 1.0;
+
     return Semantics(
       button: true,
       enabled: _isEnabled,
@@ -135,35 +140,44 @@ class _PrimaryButtonState extends State<PrimaryButton> {
         onTapCancel: _handleTapCancel,
         onTap: _isEnabled ? widget.onPressed : null,
         behavior: HitTestBehavior.opaque,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 70),
-          curve: Curves.easeOutQuad,
-          transform: Matrix4.translationValues(0, translationY, 0),
-          width: widget.width,
-          height: effectiveHeight,
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: widget.borderRadius,
-            // Bisel inferior 3D y sombra ambiental difusa
-            boxShadow: [
-              // Sombra sólida del borde inferior (extrusión 3D)
-              BoxShadow(
-                color: bevelColor,
-                offset: Offset(0, currentElevation),
-                blurRadius: 0,
-              ),
-              // Sombra ambiental suave
-              if (_isEnabled && !_isPressed)
+        child: AnimatedScale(
+          scale: pressScale,
+          duration: reduceMotion
+              ? Duration.zero
+              : (_isPressed
+                  ? const Duration(milliseconds: 90)
+                  : const Duration(milliseconds: 150)),
+          curve: _isPressed ? Curves.easeOutCubic : Curves.easeOutBack,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 90),
+            curve: Curves.easeOutQuad,
+            transform: Matrix4.translationValues(0, translationY, 0),
+            width: widget.width,
+            height: effectiveHeight,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: widget.borderRadius,
+              // Bisel inferior 3D y sombra ambiental difusa
+              boxShadow: [
+                // Sombra sólida del borde inferior (extrusión 3D)
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  offset: Offset(0, currentElevation + 3),
-                  blurRadius: 8,
+                  color: bevelColor,
+                  offset: Offset(0, currentElevation),
+                  blurRadius: 0,
                 ),
-            ],
+                // Sombra ambiental suave
+                if (_isEnabled && !_isPressed)
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    offset: Offset(0, currentElevation + 3),
+                    blurRadius: 8,
+                  ),
+              ],
+            ),
+            padding: widget.padding,
+            alignment: Alignment.center,
+            child: content,
           ),
-          padding: widget.padding,
-          alignment: Alignment.center,
-          child: content,
         ),
       ),
     );

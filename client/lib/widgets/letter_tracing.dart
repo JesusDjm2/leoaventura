@@ -1,64 +1,332 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../content/activity_model.dart';
+import '../services/haptic_service.dart';
 import '../services/tts_service.dart';
+import 'animated_leo.dart';
 import 'celebration_animation.dart';
+import 'confetti_overlay.dart';
 
-/// Widget de trazado táctil para párvulos.
-/// Muestra la letra guía, captura los trazos del niño, evalúa precisión y
-/// provee retroalimentación visual (animación) y auditiva (TTS).
+/// Widget de trazado táctil dinámico para párvulos.
+/// Recibe por parámetros la letra, clave de audio, fonema, palabra de ejemplo,
+/// textos de locución y puntos guía normalizados (0.0 a 1.0), permitiendo renderizar
+/// cualquier fonema servido por el Motor de Contenido Dinámico (Fase 16).
 class LetterTracing extends StatefulWidget {
   final String letter;
+  final String? audioKey;
+  final String? phoneme;
+  final String? exampleWord;
+  final String? instructionText;
+  final String? successText;
+  final List<Offset>? checkpoints;
   final VoidCallback? onComplete;
   final TtsService? ttsService;
 
   const LetterTracing({
     super.key,
     required this.letter,
+    this.audioKey,
+    this.phoneme,
+    this.exampleWord,
+    this.instructionText,
+    this.successText,
+    this.checkpoints,
     this.onComplete,
     this.ttsService,
   });
+
+  /// Construye el minijuego directamente desde un [ActivityModel] del backend.
+  factory LetterTracing.fromActivity(
+    ActivityModel activity, {
+    Key? key,
+    VoidCallback? onComplete,
+    TtsService? ttsService,
+  }) {
+    final payload = activity.tracingPayload;
+    return LetterTracing(
+      key: key ?? Key('letter_tracing_${payload.letter.toLowerCase()}'),
+      letter: payload.letter,
+      audioKey: payload.audioKey.isNotEmpty ? payload.audioKey : activity.audioKey,
+      phoneme: payload.phoneme,
+      exampleWord: payload.exampleWord,
+      instructionText: activity.instruction.isNotEmpty ? activity.instruction : null,
+      successText: payload.successText,
+      checkpoints: payload.checkpoints.isNotEmpty ? payload.checkpoints : null,
+      onComplete: onComplete,
+      ttsService: ttsService,
+    );
+  }
+
+  /// Checkpoints pedagógicos normalizados (0.0 a 1.0) para los 20 fonemas del currículo.
+  /// Siguen direccionalidad de escritura escolar: arriba -> abajo, izquierda -> derecha.
+  static const Map<String, List<Offset>> defaultCheckpointsByLetter = {
+    'a': [
+      Offset(0.50, 0.25),
+      Offset(0.38, 0.50),
+      Offset(0.28, 0.75),
+      Offset(0.62, 0.50),
+      Offset(0.72, 0.75),
+      Offset(0.50, 0.58),
+    ],
+    'e': [
+      Offset(0.36, 0.50),
+      Offset(0.64, 0.50),
+      Offset(0.56, 0.34),
+      Offset(0.36, 0.38),
+      Offset(0.36, 0.64),
+      Offset(0.58, 0.72),
+    ],
+    'i': [
+      Offset(0.50, 0.26),
+      Offset(0.50, 0.44),
+      Offset(0.50, 0.60),
+      Offset(0.50, 0.75),
+    ],
+    'o': [
+      Offset(0.50, 0.28),
+      Offset(0.32, 0.50),
+      Offset(0.50, 0.72),
+      Offset(0.68, 0.50),
+    ],
+    'u': [
+      Offset(0.32, 0.35),
+      Offset(0.34, 0.62),
+      Offset(0.50, 0.74),
+      Offset(0.66, 0.62),
+      Offset(0.68, 0.35),
+    ],
+    'm': [
+      Offset(0.22, 0.35),
+      Offset(0.22, 0.55),
+      Offset(0.22, 0.75),
+      Offset(0.36, 0.35),
+      Offset(0.50, 0.55),
+      Offset(0.50, 0.75),
+      Offset(0.64, 0.35),
+      Offset(0.78, 0.55),
+      Offset(0.78, 0.75),
+    ],
+    'p': [
+      Offset(0.35, 0.30),
+      Offset(0.35, 0.55),
+      Offset(0.35, 0.78),
+      Offset(0.55, 0.30),
+      Offset(0.65, 0.42),
+      Offset(0.52, 0.54),
+    ],
+    's': [
+      Offset(0.64, 0.30),
+      Offset(0.48, 0.26),
+      Offset(0.34, 0.38),
+      Offset(0.50, 0.50),
+      Offset(0.66, 0.62),
+      Offset(0.50, 0.74),
+      Offset(0.34, 0.70),
+    ],
+    'l': [
+      Offset(0.40, 0.25),
+      Offset(0.40, 0.50),
+      Offset(0.40, 0.75),
+      Offset(0.62, 0.75),
+    ],
+    't': [
+      Offset(0.50, 0.25),
+      Offset(0.50, 0.50),
+      Offset(0.50, 0.75),
+      Offset(0.34, 0.40),
+      Offset(0.66, 0.40),
+    ],
+    'n': [
+      Offset(0.32, 0.35),
+      Offset(0.32, 0.75),
+      Offset(0.50, 0.35),
+      Offset(0.68, 0.55),
+      Offset(0.68, 0.75),
+    ],
+    'd': [
+      Offset(0.64, 0.24),
+      Offset(0.64, 0.50),
+      Offset(0.64, 0.75),
+      Offset(0.48, 0.46),
+      Offset(0.34, 0.58),
+      Offset(0.50, 0.72),
+    ],
+    'f': [
+      Offset(0.62, 0.26),
+      Offset(0.48, 0.30),
+      Offset(0.46, 0.52),
+      Offset(0.46, 0.75),
+      Offset(0.34, 0.48),
+      Offset(0.60, 0.48),
+    ],
+    'r': [
+      Offset(0.38, 0.34),
+      Offset(0.38, 0.55),
+      Offset(0.38, 0.75),
+      Offset(0.50, 0.36),
+      Offset(0.64, 0.36),
+    ],
+    'b': [
+      Offset(0.36, 0.24),
+      Offset(0.36, 0.50),
+      Offset(0.36, 0.75),
+      Offset(0.54, 0.48),
+      Offset(0.64, 0.60),
+      Offset(0.50, 0.74),
+    ],
+    'c': [
+      Offset(0.66, 0.34),
+      Offset(0.48, 0.28),
+      Offset(0.34, 0.50),
+      Offset(0.48, 0.72),
+      Offset(0.66, 0.66),
+    ],
+    'g': [
+      Offset(0.62, 0.34),
+      Offset(0.42, 0.34),
+      Offset(0.34, 0.50),
+      Offset(0.56, 0.58),
+      Offset(0.62, 0.70),
+      Offset(0.42, 0.80),
+    ],
+    'j': [
+      Offset(0.54, 0.24),
+      Offset(0.54, 0.44),
+      Offset(0.54, 0.66),
+      Offset(0.46, 0.78),
+      Offset(0.36, 0.74),
+    ],
+    'v': [
+      Offset(0.30, 0.32),
+      Offset(0.40, 0.54),
+      Offset(0.50, 0.74),
+      Offset(0.60, 0.54),
+      Offset(0.70, 0.32),
+    ],
+    'ñ': [
+      Offset(0.32, 0.40),
+      Offset(0.32, 0.75),
+      Offset(0.50, 0.42),
+      Offset(0.68, 0.58),
+      Offset(0.68, 0.75),
+      Offset(0.36, 0.26),
+      Offset(0.64, 0.26),
+    ],
+  };
+
+  static const List<Offset> fallbackCheckpoints = [
+    Offset(0.35, 0.30),
+    Offset(0.50, 0.40),
+    Offset(0.50, 0.55),
+    Offset(0.50, 0.70),
+    Offset(0.65, 0.75),
+  ];
+
+  /// Resuelve los checkpoints efectivos para esta instancia.
+  List<Offset> get resolvedCheckpoints {
+    if (checkpoints != null && checkpoints!.isNotEmpty) {
+      return checkpoints!;
+    }
+    return defaultCheckpointsByLetter[letter.toLowerCase()] ?? fallbackCheckpoints;
+  }
 
   @override
   State<LetterTracing> createState() => _LetterTracingState();
 }
 
-class _LetterTracingState extends State<LetterTracing> {
+class _LetterTracingState extends State<LetterTracing>
+    with SingleTickerProviderStateMixin {
   late final TtsService _ttsService;
+  late final AnimationController _guideController;
 
   final List<Offset> _userPoints = [];
   final Set<int> _hitCheckpoints = {};
   bool _isCompleted = false;
+  String _leoState = AnimatedLeoStateName.idle;
 
-  // Checkpoints normalizados (0.0 a 1.0) para la letra 'm'
-  static const List<Offset> normalizedCheckpointsM = [
-    Offset(0.22, 0.35), // 1. Inicio trazo vertical izquierdo
-    Offset(0.22, 0.55), // 2. Centro trazo vertical izquierdo
-    Offset(0.22, 0.75), // 3. Base trazo vertical izquierdo
-    Offset(0.36, 0.35), // 4. Cúspide del primer arco
-    Offset(0.50, 0.55), // 5. Centro del segundo pilar
-    Offset(0.50, 0.75), // 6. Base del segundo pilar
-    Offset(0.64, 0.35), // 7. Cúspide del segundo arco
-    Offset(0.78, 0.55), // 8. Centro del tercer pilar
-    Offset(0.78, 0.75), // 9. Base final
-  ];
+  bool get _isWidgetTest =>
+      WidgetsBinding.instance.runtimeType.toString().contains('Test');
+
+  String get _upperLetter => widget.letter.toUpperCase();
+  String get _lowerLetter => widget.letter.toLowerCase();
+
+  String get _resolvedInstruction =>
+      widget.instructionText ??
+      '¡Hola! Traza la letra $_upperLetter con tu dedito.';
+
+  String get _resolvedSuccessAudio {
+    if (widget.successText != null && widget.successText!.isNotEmpty) {
+      return widget.successText!;
+    }
+    if (widget.exampleWord != null && widget.exampleWord!.isNotEmpty) {
+      final cue = widget.phoneme ?? _upperLetter;
+      return '¡Excelente! Has trazado la letra $_upperLetter. ¡$cue como en ${widget.exampleWord}!';
+    }
+    if (_lowerLetter == 'm') {
+      return '¡Excelente! Has trazado la letra M. ¡Mmm como en Mamá!';
+    }
+    return '¡Excelente! Has trazado la letra $_upperLetter.';
+  }
 
   @override
   void initState() {
     super.initState();
-    _ttsService = widget.ttsService ?? ParvuloTtsService();
+    _ttsService = widget.ttsService ?? ParvuloTtsService.shared;
+    _guideController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    );
+    if (!_isWidgetTest) {
+      _guideController.repeat();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _ttsService.speak('¡Hola! Traza la letra ${widget.letter.toUpperCase()} con tu dedito.');
+      if (!mounted) return;
+      if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) {
+        _guideController.stop();
+      }
+      _ttsService.playClip(
+        widget.audioKey,
+        fallbackText: _resolvedInstruction,
+      );
     });
+  }
+
+  @override
+  void dispose() {
+    _guideController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant LetterTracing oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.letter != widget.letter ||
+        oldWidget.audioKey != widget.audioKey) {
+      _userPoints.clear();
+      _hitCheckpoints.clear();
+      _isCompleted = false;
+    }
   }
 
   void _onPanStart(DragStartDetails details, Size canvasSize) {
     if (_isCompleted) return;
+    if (_leoState != AnimatedLeoStateName.idle) {
+      setState(() => _leoState = AnimatedLeoStateName.idle);
+    }
     _addPoint(details.localPosition, canvasSize);
   }
 
   void _onPanUpdate(DragUpdateDetails details, Size canvasSize) {
     if (_isCompleted) return;
     _addPoint(details.localPosition, canvasSize);
+  }
+
+  void _onPanEnd(DragEndDetails details) {
+    if (_isCompleted || _userPoints.isEmpty) return;
+    // Si soltó el trazo sin completar la letra, Leo responde de forma empática (nunca punitiva)
+    setState(() {
+      _leoState = AnimatedLeoStateName.sad;
+    });
   }
 
   void _addPoint(Offset localPosition, Size canvasSize) {
@@ -70,7 +338,7 @@ class _LetterTracingState extends State<LetterTracing> {
   }
 
   void _checkHitpoints(Offset point, Size canvasSize) {
-    final checkpoints = normalizedCheckpointsM;
+    final checkpoints = widget.resolvedCheckpoints;
     final hitRadius = canvasSize.width * 0.16; // Margen adaptado para párvulos
 
     for (int i = 0; i < checkpoints.length; i++) {
@@ -97,10 +365,14 @@ class _LetterTracingState extends State<LetterTracing> {
   void _triggerSuccess() {
     setState(() {
       _isCompleted = true;
+      _leoState = AnimatedLeoStateName.happy;
     });
 
-    // Retroalimentación de audio (TTS) con fonema y felicitación
-    _ttsService.speak('¡Excelente! Has trazado la letra ${widget.letter.toUpperCase()}. ¡Mmm como en Mamá!');
+    HapticService.mediumImpact();
+    _ttsService.playClip(
+      widget.audioKey,
+      fallbackText: _resolvedSuccessAudio,
+    );
 
     widget.onComplete?.call();
   }
@@ -110,13 +382,15 @@ class _LetterTracingState extends State<LetterTracing> {
       _userPoints.clear();
       _hitCheckpoints.clear();
       _isCompleted = false;
+      _leoState = AnimatedLeoStateName.idle;
     });
-    _ttsService.speak('Vamos de nuevo. ¡Tú puedes trazar la letra ${widget.letter.toUpperCase()}!');
+    _ttsService.speak('Vamos de nuevo. ¡Tú puedes trazar la letra $_upperLetter!');
   }
 
   @override
   Widget build(BuildContext context) {
-    final letterChar = widget.letter.toLowerCase();
+    final letterChar = _lowerLetter;
+    final checkpoints = widget.resolvedCheckpoints;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -134,38 +408,75 @@ class _LetterTracingState extends State<LetterTracing> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Encabezado con instrucción amigable y escala contenida
+                // Encabezado con mascota animada Rive (<AnimatedLeo />) e instrucción amigable
                 FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(20),
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedLeo(
+                        key: const Key('tracing_animated_leo'),
+                        state: _leoState,
+                        size: 56,
+                      ),
+                      const SizedBox(width: 10),
+                      Container(
+                        margin: const EdgeInsets.only(right: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(20),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.touch_app_rounded, color: Colors.deepOrangeAccent, size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Traza la letra "${letterChar.toUpperCase()}"',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF263238),
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.touch_app_rounded, color: Colors.deepOrangeAccent, size: 24),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Traza la letra "$_upperLetter"',
+                              key: const Key('tracing_header_text'),
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF263238),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Semantics(
+                              label: 'Escuchar sonido de la letra $_upperLetter',
+                              button: true,
+                              child: SizedBox(
+                                width: 48,
+                                height: 48,
+                                child: IconButton(
+                                  key: const Key('tracing_play_sound_btn'),
+                                  tooltip: 'Escuchar fonema',
+                                  icon: const Icon(
+                                    Icons.volume_up_rounded,
+                                    color: Color(0xFF1565C0),
+                                    size: 26,
+                                  ),
+                                  onPressed: () {
+                                    HapticService.lightImpact();
+                                    _ttsService.playClip(
+                                      widget.audioKey,
+                                      fallbackText: _resolvedInstruction,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -177,36 +488,46 @@ class _LetterTracingState extends State<LetterTracing> {
                     alignment: Alignment.center,
                     children: [
                       // Lienzo de fondo con letra guía y trazo del niño
-                      GestureDetector(
-                        key: const Key('tracing_canvas_gesture'),
-                        onPanStart: (d) => _onPanStart(d, canvasSize),
-                        onPanUpdate: (d) => _onPanUpdate(d, canvasSize),
-                        child: Container(
-                          width: canvasSize.width,
-                          height: canvasSize.height,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF9FBE7),
-                            borderRadius: BorderRadius.circular(32),
-                            border: Border.all(
-                              color: _isCompleted ? Colors.amber : const Color(0xFF81C784),
-                              width: 5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(25),
-                                blurRadius: 16,
-                                offset: const Offset(0, 8),
+                      Semantics(
+                        label: 'Área de trazado para la letra $letterChar',
+                        child: GestureDetector(
+                          key: const Key('tracing_canvas_gesture'),
+                          onPanStart: (d) => _onPanStart(d, canvasSize),
+                          onPanUpdate: (d) => _onPanUpdate(d, canvasSize),
+                          onPanEnd: _onPanEnd,
+                          child: Container(
+                            width: canvasSize.width,
+                            height: canvasSize.height,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF9FBE7),
+                              borderRadius: BorderRadius.circular(32),
+                              border: Border.all(
+                                color: _isCompleted ? Colors.amber : const Color(0xFF81C784),
+                                width: 5,
                               ),
-                            ],
-                          ),
-                          child: CustomPaint(
-                            size: canvasSize,
-                            painter: _LetterTracingPainter(
-                              letter: letterChar,
-                              userPoints: _userPoints,
-                              checkpoints: normalizedCheckpointsM,
-                              hitCheckpoints: _hitCheckpoints,
-                              isCompleted: _isCompleted,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withAlpha(25),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: AnimatedBuilder(
+                              animation: _guideController,
+                              builder: (_, __) => CustomPaint(
+                                key: Key('tracing_guide_canvas_$letterChar'),
+                                size: canvasSize,
+                                painter: LetterTracingPainter(
+                                  letter: letterChar,
+                                  userPoints: _userPoints,
+                                  checkpoints: checkpoints,
+                                  hitCheckpoints: _hitCheckpoints,
+                                  isCompleted: _isCompleted,
+                                  guideProgress: _guideController.value,
+                                  showGuideStar: _userPoints.isEmpty && !_isCompleted,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -224,11 +545,17 @@ class _LetterTracingState extends State<LetterTracing> {
                             child: Center(
                               child: CelebrationAnimation(
                                 title: '¡Excelente!',
-                                subtitle: 'Has trazado la letra "${letterChar.toUpperCase()}"',
+                                subtitle: 'Has trazado la letra "$_upperLetter"',
                               ),
                             ),
                           ),
                         ),
+
+                      // Partículas de confeti impulsadas por Flame al ganar
+                      ConfettiOverlay(
+                        key: const Key('tracing_confetti_overlay'),
+                        active: _isCompleted,
+                      ),
                     ],
                   ),
                 ),
@@ -264,20 +591,25 @@ class _LetterTracingState extends State<LetterTracing> {
   }
 }
 
-/// Painter encargado de renderizar la letra guía, puntos de referencia y el trazo del párvulo.
-class _LetterTracingPainter extends CustomPainter {
+/// Painter encargado de renderizar la letra guía, estrellita guía animada,
+/// puntos de referencia con halo, trazo del párvulo y rastro mágico de chispas.
+class LetterTracingPainter extends CustomPainter {
   final String letter;
   final List<Offset> userPoints;
   final List<Offset> checkpoints;
   final Set<int> hitCheckpoints;
   final bool isCompleted;
+  final double guideProgress;
+  final bool showGuideStar;
 
-  _LetterTracingPainter({
+  LetterTracingPainter({
     required this.letter,
     required this.userPoints,
     required this.checkpoints,
     required this.hitCheckpoints,
     required this.isCompleted,
+    this.guideProgress = 0.0,
+    this.showGuideStar = false,
   });
 
   @override
@@ -302,42 +634,108 @@ class _LetterTracingPainter extends CustomPainter {
     );
     textPainter.paint(canvas, textOffset);
 
-    // 2. Dibujar checkpoints guía interactivos
-    final checkpointPaint = Paint()..style = PaintingStyle.fill;
+    // 2. Dibujar puntos de guía interactivos sobre la trayectoria de la letra
     for (int i = 0; i < checkpoints.length; i++) {
-      final point = Offset(
+      final pt = Offset(
         checkpoints[i].dx * size.width,
         checkpoints[i].dy * size.height,
       );
-
       final isHit = hitCheckpoints.contains(i);
-      checkpointPaint.color = isHit
-          ? Colors.greenAccent.shade700
-          : Colors.orangeAccent.withAlpha(160);
 
-      canvas.drawCircle(point, isHit ? 9.0 : 6.0, checkpointPaint);
+      if (isHit) {
+        final haloPaint = Paint()
+          ..color = const Color(0xFF66BB6A).withAlpha(80)
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(pt, 16, haloPaint);
+      }
+
+      final dotPaint = Paint()
+        ..color = isHit ? const Color(0xFF4CAF50) : Colors.deepOrangeAccent.withAlpha(115)
+        ..style = PaintingStyle.fill;
+
+      canvas.drawCircle(pt, isHit ? 10 : 8, dotPaint);
     }
 
-    // 3. Dibujar el trazo del niño con grosor táctil ergonómico
-    if (userPoints.isNotEmpty) {
+    // 2.5 Estrellita dorada guía recorriendo la letra antes de que el niño trace
+    if (showGuideStar && checkpoints.length >= 2) {
+      final scaled = guideProgress.clamp(0.0, 0.999) * (checkpoints.length - 1);
+      final segIndex = scaled.floor().clamp(0, checkpoints.length - 2);
+      final segT = scaled - segIndex;
+      final a = Offset(
+        checkpoints[segIndex].dx * size.width,
+        checkpoints[segIndex].dy * size.height,
+      );
+      final b = Offset(
+        checkpoints[segIndex + 1].dx * size.width,
+        checkpoints[segIndex + 1].dy * size.height,
+      );
+      final guidePos = Offset.lerp(a, b, segT)!;
+
+      canvas.drawCircle(
+        guidePos,
+        18,
+        Paint()..color = const Color(0xFFFFCA28).withAlpha(75),
+      );
+      _drawStar(canvas, guidePos, 11, const Color(0xFFFFA000));
+    }
+
+    // 3. Dibujar el trazo continuo del niño con pincel grueso + chispas mágicas
+    if (userPoints.length > 1) {
       final strokePaint = Paint()
-        ..color = isCompleted ? Colors.amber.shade700 : const Color(0xFFE91E63)
-        ..strokeWidth = 16.0
+        ..color = isCompleted ? const Color(0xFFFFA000) : const Color(0xFF29B6F6)
+        ..strokeWidth = 22.0
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round
         ..style = PaintingStyle.stroke;
 
-      final path = Path();
-      path.moveTo(userPoints.first.dx, userPoints.first.dy);
-
+      final path = Path()..moveTo(userPoints.first.dx, userPoints.first.dy);
       for (int i = 1; i < userPoints.length; i++) {
         path.lineTo(userPoints[i].dx, userPoints[i].dy);
       }
-
       canvas.drawPath(path, strokePaint);
+
+      // Chispas mágicas sutiles sobre los últimos puntos del trazo
+      const sparkleColors = [
+        Color(0xFFFFD54F),
+        Color(0xFFFF9E3D),
+        Color(0xFF62C462),
+        Color(0xFF5BC0EB),
+      ];
+      final startIdx = math.max(0, userPoints.length - 14);
+      for (int i = startIdx; i < userPoints.length; i += 3) {
+        final ageFactor = (i - startIdx + 1) / (userPoints.length - startIdx + 1);
+        final angle = i * 1.3;
+        final sparkleOffset = userPoints[i] +
+            Offset(math.cos(angle) * 14, math.sin(angle) * 14);
+        _drawStar(
+          canvas,
+          sparkleOffset,
+          4.5 + ageFactor * 3.5,
+          sparkleColors[i % sparkleColors.length].withValues(alpha: ageFactor),
+        );
+      }
     }
   }
 
+  void _drawStar(Canvas canvas, Offset center, double radius, Color color) {
+    final path = Path();
+    const spikes = 5;
+    final inner = radius * 0.48;
+    for (int i = 0; i < spikes * 2; i++) {
+      final r = i.isEven ? radius : inner;
+      final angle = -math.pi / 2 + (i * math.pi / spikes);
+      final x = center.dx + math.cos(angle) * r;
+      final y = center.dy + math.sin(angle) * r;
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, Paint()..color = color);
+  }
+
   @override
-  bool shouldRepaint(covariant _LetterTracingPainter oldDelegate) => true;
+  bool shouldRepaint(covariant LetterTracingPainter oldDelegate) => true;
 }

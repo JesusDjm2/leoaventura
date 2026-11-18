@@ -238,4 +238,53 @@ class SyncProgressTest extends TestCase
         $response->assertStatus(403);
         $this->assertDatabaseCount('activity_progress', 0);
     }
+
+    /**
+     * Test GET /api/progress returns the authenticated parent's synced progress (multi-device read).
+     */
+    public function test_get_progress_returns_synced_state_for_authenticated_parent_only(): void
+    {
+        $parent = User::factory()->create();
+        $child = Child::create(['user_id' => $parent->id, 'name' => 'Sofía']);
+        $token = $parent->createToken('web_token')->plainTextToken;
+
+        // Otro padre con progreso distinto (no debe filtrarse)
+        $otherParent = User::factory()->create();
+        $otherChild = Child::create(['user_id' => $otherParent->id, 'name' => 'Lucas']);
+        ActivityProgress::create([
+            'child_id' => $otherChild->id,
+            'activity_id' => 'act_other',
+            'score' => 50,
+            'stars' => 1,
+        ]);
+
+        // Guardar progreso desde "la web"
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->postJson('/api/sync/progress', [
+                'events' => [
+                    [
+                        'child_id' => $child->id,
+                        'activity_id' => 'act_m_tracing',
+                        'score' => 100,
+                        'stars' => 3,
+                        'updated_at' => Carbon::now()->toISOString(),
+                        'deleted_at' => null,
+                    ],
+                ],
+            ])->assertOk();
+
+        // Consultar desde "el móvil" con GET /api/progress
+        $response = $this->withHeader('Authorization', "Bearer {$token}")
+            ->getJson('/api/progress');
+
+        $response->assertOk()
+            ->assertJsonPath('total_completed', 1)
+            ->assertJsonPath('total_stars', 3)
+            ->assertJsonCount(1, 'progress')
+            ->assertJsonPath('progress.0.child_id', $child->id)
+            ->assertJsonPath('progress.0.child_name', 'Sofía')
+            ->assertJsonPath('progress.0.activity_id', 'act_m_tracing')
+            ->assertJsonPath('progress.0.score', 100)
+            ->assertJsonPath('progress.0.stars', 3);
+    }
 }

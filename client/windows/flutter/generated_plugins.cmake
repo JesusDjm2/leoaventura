@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
   printing
+  rive_common
   sqlite3_flutter_libs
 )
 

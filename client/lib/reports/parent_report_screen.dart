@@ -1,13 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
 import 'parent_report_models.dart';
 import 'report_pdf_exporter.dart';
 
-/// Colores con contraste AA sobre blanco (texto blanco sobre [_brand]: 5.6:1).
-const _brand = Color(0xFFBF360C);
-const _ink = Color(0xFF1F2933);
-const _inkMuted = Color(0xFF4A5560);
+/// Colores del Design System Leoaventura con contraste AAA sobre blanco.
+const _brand = AppColors.navy;
+const _ink = AppColors.navy;
+const _inkMuted = AppColors.textMuted;
 
 Color levelColor(MasteryLevel l) => switch (l) {
       MasteryLevel.mastered => const Color(0xFF2E7D32),
@@ -60,13 +61,14 @@ class _ParentReportScreenState extends State<ParentReportScreen> {
   Widget build(BuildContext context) {
     final r = widget.report;
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F4F8),
+      backgroundColor: AppColors.sky,
       appBar: AppBar(
-        backgroundColor: _brand,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.sky,
+        foregroundColor: AppColors.navy,
+        elevation: 0,
         title: const Text(
           'Panel de Padres y Docentes',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.navy),
         ),
       ),
       body: SafeArea(
@@ -318,7 +320,58 @@ class _PhonemeChartCard extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: _inkMuted),
             ),
             const SizedBox(height: 20),
-            Semantics(
+            if (phonemes.isEmpty)
+              Container(
+                key: const Key('empty_report_state'),
+                constraints: const BoxConstraints(minHeight: 160),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7FAFC),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFD9DEE3)),
+                ),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.auto_stories_rounded, size: 40, color: _inkMuted),
+                    SizedBox(height: 10),
+                    Text(
+                      'Aún no hay sesiones registradas para este perfil.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: _ink,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Completa una letra con Leo y vuelve aquí para ver el progreso real.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: _inkMuted),
+                    ),
+                  ],
+                ),
+              )
+            else ...[
+              if (report.totalSessions == 0) ...[
+                Container(
+                  key: const Key('starter_report_hint'),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7FAFC),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: const Color(0xFFD9DEE3)),
+                  ),
+                  child: const Text(
+                    'Aún no hay actividades completadas. Las barras subirán automáticamente al jugar con Leo.',
+                    style: TextStyle(fontSize: 13, color: _inkMuted),
+                  ),
+                ),
+              ],
+              Semantics(
               container: true,
               label: a11yLabel,
               excludeSemantics: true,
@@ -415,6 +468,7 @@ class _PhonemeChartCard extends StatelessWidget {
                 ),
               ),
             ),
+            ],
             const SizedBox(height: 12),
             Wrap(
               spacing: 16,

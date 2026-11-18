@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leo_parvulos_app/services/tts_service.dart';
@@ -168,7 +167,6 @@ void main() {
     });
 
     test('4. Verificación de integridad: Ningún clip truncado ni silencios inesperados', () {
-      final qaAudio = LatencyMeasuringTtsService();
       // Simular verificación de integridad sobre el catálogo fonético
       final clips = [
         {'id': 'fonema_m', 'duracion_ms': 1200, 'silencio_ms': 50, 'truncado': false},

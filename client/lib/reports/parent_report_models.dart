@@ -16,6 +16,15 @@ class PhonemeProgress {
   final int sessions;
 
   MasteryLevel get level => MasteryLevel.of(mastery);
+
+  factory PhonemeProgress.fromJson(Map<String, dynamic> json) {
+    final rawMastery = (json['mastery'] as num?)?.round() ?? 0;
+    return PhonemeProgress(
+      phoneme: ((json['phoneme'] as String?) ?? '?').toUpperCase(),
+      mastery: rawMastery.clamp(0, 100),
+      sessions: (json['sessions'] as num?)?.toInt() ?? 0,
+    );
+  }
 }
 
 enum MasteryLevel {
@@ -52,6 +61,26 @@ class ParentReport {
   int get totalSessions => phonemes.fold(0, (a, p) => a + p.sessions);
   int get masteredCount =>
       phonemes.where((p) => p.level == MasteryLevel.mastered).length;
+
+  /// Parsea la respuesta real de `GET /api/children/{child}/report`.
+  factory ParentReport.fromJson(Map<String, dynamic> json) {
+    final rawPhonemes = (json['phonemes'] as List?) ?? const [];
+    final phonemes = rawPhonemes
+        .whereType<Map>()
+        .map((m) => PhonemeProgress.fromJson(Map<String, dynamic>.from(m)))
+        .toList(growable: false);
+
+    final minutes = (json['total_practice_minutes'] as num?)?.toInt() ?? 0;
+    final parsedDate = DateTime.tryParse((json['generated_at'] as String?) ?? '');
+
+    return ParentReport(
+      childName: (json['child_name'] as String?) ?? 'Estudiante',
+      periodLabel: (json['period_label'] as String?) ?? 'Progreso acumulado',
+      totalPractice: Duration(minutes: minutes < 0 ? 0 : minutes),
+      phonemes: phonemes,
+      generatedAt: parsedDate ?? DateTime.now(),
+    );
+  }
 
   /// Datos de demostración hasta conectar con el backend.
   static ParentReport mock({DateTime? now}) => ParentReport(
